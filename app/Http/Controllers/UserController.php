@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\User\StoreUserRequest;
 use App\Services\UserService;
 
 class UserController extends Controller
@@ -20,15 +20,10 @@ class UserController extends Controller
         return response()->json($posts);
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required',
-            'password' => 'required',
-        ]);
-
-        $post = $this->userService->createUser($data);
+        $validatedData = $request->validated();
+        $post = $this->userService->createUser($validatedData);
         return response()->json($post, 201);
     }
 }
