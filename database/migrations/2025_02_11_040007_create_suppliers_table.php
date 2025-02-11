@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
+            $table->string('role')->nullable();
             $table->string('avatar')->default('https://s.net.vn/76Th');
             $table->string('password');
             $table->softDeletes();
