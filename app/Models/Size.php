@@ -6,24 +6,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Review extends Model
+class Size extends Model
 {
-    protected $table = 'reviews';
     use HasFactory, SoftDeletes;
+    protected $table = 'size';
+    
     protected $fillable = [
-        'user_id',
-        'product_id',
-        'rating',
-        'content'
+        'shirt_size',
+        'pant_size',
+        'minimun_weight',
+        'maximun_weight',
+        'minimun_height',
+        'maximun_height',
+        'target_audience'
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
+    
 }

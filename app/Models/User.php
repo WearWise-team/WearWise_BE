@@ -22,9 +22,9 @@ class User extends Model
         'role',
         'weight',
         'height',
-        'bust',
-        'waist',
-        'hips'
+        'shirt_size',
+        'pant_size',
+        'gender'
     ];
 
     protected $hidden = ['password'];

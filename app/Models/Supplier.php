@@ -18,7 +18,6 @@ class Supplier extends Model
         'email',
         'phone',
         'address',
-        'role',
         'avatar',
         'password'
     ];

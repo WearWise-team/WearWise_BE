@@ -22,9 +22,9 @@ return new class extends Migration
             $table->string('avatar')->default('https://s.net.vn/76Th');
             $table->string('weight')->nullable();
             $table->string('height')->nullable();
-            $table->string('bust')->nullable();
-            $table->string('waist')->nullable();
-            $table->string('hips')->nullable();
+            $table->string('shirt_size')->nullable();
+            $table->string('pant_size')->nullable();
+            $table->string('gender')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -50,4 +50,8 @@ class Product extends Model
         return $this->hasMany(Discount_Assignment::class);
     }
     
+    public function size(){
+        return $this->hasMany(Size::class);
+    }
+    
 }

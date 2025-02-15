@@ -2,17 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\Supplier;
+use App\Models\Discount_Assignment;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class SupplierSeeder extends Seeder
+class DiscountAssignmentSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Supplier::factory(5)->create();
+        Discount_Assignment::factory(5)->create();
     }
 }
