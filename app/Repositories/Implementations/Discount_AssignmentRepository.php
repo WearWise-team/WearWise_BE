@@ -3,9 +3,9 @@
 namespace App\Repositories\Implementations;
 
 use App\Models\Discount_Assignment;
-use App\Repositories\Contracts\IRepository;
+use App\Repositories\Contracts\IDiscount_AssignmentRepository;
 
-class Discount_AssignmentRepository implements IRepository
+class Discount_AssignmentRepository implements IDiscount_AssignmentRepository
 {
     protected $model;
 

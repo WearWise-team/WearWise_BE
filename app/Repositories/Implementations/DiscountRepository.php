@@ -3,9 +3,9 @@
 namespace App\Repositories\Implementations;
 
 use App\Models\Discount;
-use App\Repositories\Contracts\IRepository;
+use App\Repositories\Contracts\IDiscountRepository;
 
-class DiscountRepository implements IRepository
+class DiscountRepository implements IDiscountRepository
 {
     protected $model;
 

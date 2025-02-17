@@ -3,9 +3,9 @@
 namespace App\Repositories\Implementations;
 
 use App\Models\Review;
-use App\Repositories\Contracts\IRepository;
+use App\Repositories\Contracts\IReviewRepository;
 
-class ReviewRepository implements IRepository
+class ReviewRepository implements IReviewRepository
 {
     protected $model;
 

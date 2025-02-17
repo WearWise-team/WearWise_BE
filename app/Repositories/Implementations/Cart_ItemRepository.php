@@ -3,9 +3,9 @@
 namespace App\Repositories\Implementations;
 
 use App\Models\Cart_Item;
-use App\Repositories\Contracts\IRepository;
+use App\Repositories\Contracts\ICart_ItemRepository;
 
-class Cart_ItemRepository implements IRepository
+class Cart_ItemRepository implements ICart_ItemRepository
 {
     protected $model;
 

@@ -3,9 +3,9 @@
 namespace App\Repositories\Implementations;
 
 use App\Models\Wishlist;
-use App\Repositories\Contracts\IRepository;
+use App\Repositories\Contracts\IWishlistRepository;
 
-class WishlistRepository implements IRepository
+class WishlistRepository implements IWishlistRepository
 {
     protected $model;
 

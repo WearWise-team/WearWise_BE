@@ -3,9 +3,9 @@
 namespace App\Repositories\Implementations;
 
 use App\Models\Order_Item;
-use App\Repositories\Contracts\IRepository;
+use App\Repositories\Contracts\IOrder_ItemRepository;
 
-class Order_ItemRepository implements IRepository
+class Order_ItemRepository implements IOrder_ItemRepository
 {
     protected $model;
 

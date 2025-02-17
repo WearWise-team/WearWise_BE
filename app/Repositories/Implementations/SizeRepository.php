@@ -3,9 +3,9 @@
 namespace App\Repositories\Implementations;
 
 use App\Models\Size;
-use App\Repositories\Contracts\IRepository;
+use App\Repositories\Contracts\ISizeRepository;
 
-class SizeRepository implements IRepository
+class SizeRepository implements ISizeRepository
 {
     protected $model;
 

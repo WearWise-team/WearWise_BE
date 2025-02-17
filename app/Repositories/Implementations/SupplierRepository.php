@@ -3,9 +3,9 @@
 namespace App\Repositories\Implementations;
 
 use App\Models\Supplier;
-use  App\Repositories\Contracts\IRepository;
+use App\Repositories\Contracts\ISupplierRepository;
 
-class SupplierRepository implements IRepository
+class SupplierRepository implements ISupplierRepository
 {
     protected $model;
 

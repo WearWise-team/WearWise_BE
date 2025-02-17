@@ -2,10 +2,21 @@
 
 namespace App\Providers;
 
+use App\Repositories\Contracts\ICart_ItemRepository;
+use App\Repositories\Contracts\ICartRepository;
+use App\Repositories\Contracts\IDiscount_AssignmentRepository;
+use App\Repositories\Contracts\IDiscountRepository;
+use App\Repositories\Contracts\IOrder_ItemRepository;
+use App\Repositories\Contracts\IOrderRepository;
+use App\Repositories\Contracts\IProductRepository;
 use App\Repositories\Implementations\OrderRepository;
 use App\Repositories\Implementations\WishlistRepository;
 use Illuminate\Support\ServiceProvider;
-use App\Repositories\Contracts\IRepository;
+use App\Repositories\Contracts\IReviewRepository;
+use App\Repositories\Contracts\ISizeRepository;
+use App\Repositories\Contracts\ISupplierRepository;
+use App\Repositories\Contracts\IUserRepository;
+use App\Repositories\Contracts\IWishlistRepository;
 use App\Repositories\Implementations\Cart_ItemRepository;
 use App\Repositories\Implementations\CartRepository;
 use App\Repositories\Implementations\Discount_AssignmentRepository;
@@ -24,18 +35,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(IRepository::class, UserRepository::class);
-        $this->app->bind(IRepository::class, SupplierRepository::class);
-        $this->app->bind(IRepository::class, ProductRepository::class);
-        $this->app->bind(IRepository::class, ReviewRepository::class);
-        $this->app->bind(IRepository::class, WishlistRepository::class);
-        $this->app->bind(IRepository::class, OrderRepository::class);
-        $this->app->bind(IRepository::class, CartRepository::class);
-        $this->app->bind(IRepository::class, DiscountRepository::class);
-        $this->app->bind(IRepository::class, Order_ItemRepository::class);
-        $this->app->bind(IRepository::class, Cart_ItemRepository::class);
-        $this->app->bind(IRepository::class, Discount_AssignmentRepository::class);
-        $this->app->bind(IRepository::class, SizeRepository::class);
+        $this->app->bind(IUserRepository::class, UserRepository::class);
+        $this->app->bind(ISupplierRepository::class, SupplierRepository::class);
+        $this->app->bind(IProductRepository::class, ProductRepository::class);
+        $this->app->bind(IReviewRepository::class, ReviewRepository::class);
+        $this->app->bind(IWishlistRepository::class, WishlistRepository::class);
+        $this->app->bind(IOrderRepository::class, OrderRepository::class);
+        $this->app->bind(ICartRepository::class, CartRepository::class);
+        $this->app->bind(IDiscountRepository::class, DiscountRepository::class);
+        $this->app->bind(IOrder_ItemRepository::class, Order_ItemRepository::class);
+        $this->app->bind(ICart_ItemRepository::class, Cart_ItemRepository::class);
+        $this->app->bind(IDiscount_AssignmentRepository::class, Discount_AssignmentRepository::class);
+        $this->app->bind(ISizeRepository::class, SizeRepository::class);
     }
 
     /**

@@ -2,9 +2,9 @@
 namespace App\Repositories\Implementations;
 
 use App\Models\Product;
-use App\Repositories\Contracts\IRepository;
+use App\Repositories\Contracts\IProductRepository;
 
-class ProductRepository implements IRepository
+class ProductRepository implements IProductRepository
 {
     protected $model;
 
