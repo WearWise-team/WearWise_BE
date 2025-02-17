@@ -2,14 +2,14 @@
 
 namespace App\Repositories\Implementations;
 
-use App\Models\User;
+use App\Models\Review;
 use App\Repositories\Contracts\IRepository;
 
-class UserRepository implements IRepository
+class ReviewRepository implements IRepository
 {
     protected $model;
 
-    public function __construct(User $model)
+    public function __construct(Review $model)
     {
         $this->model = $model;
     }
@@ -40,3 +40,5 @@ class UserRepository implements IRepository
         return $this->model->destroy($id);
     }
 }
+
+?>

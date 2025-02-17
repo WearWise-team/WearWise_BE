@@ -2,14 +2,14 @@
 
 namespace App\Repositories\Implementations;
 
-use App\Models\User;
+use App\Models\Size;
 use App\Repositories\Contracts\IRepository;
 
-class UserRepository implements IRepository
+class SizeRepository implements IRepository
 {
     protected $model;
 
-    public function __construct(User $model)
+    public function __construct(Size $model)
     {
         $this->model = $model;
     }
@@ -39,4 +39,6 @@ class UserRepository implements IRepository
     {
         return $this->model->destroy($id);
     }
+    
 }
+?>

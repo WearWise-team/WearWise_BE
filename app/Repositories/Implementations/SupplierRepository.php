@@ -2,14 +2,14 @@
 
 namespace App\Repositories\Implementations;
 
-use App\Models\User;
-use App\Repositories\Contracts\IRepository;
+use App\Models\Supplier;
+use  App\Repositories\Contracts\IRepository;
 
-class UserRepository implements IRepository
+class SupplierRepository implements IRepository
 {
     protected $model;
 
-    public function __construct(User $model)
+    public function __construct(Supplier $model)
     {
         $this->model = $model;
     }

@@ -2,14 +2,14 @@
 
 namespace App\Repositories\Implementations;
 
-use App\Models\User;
+use App\Models\Discount;
 use App\Repositories\Contracts\IRepository;
 
-class UserRepository implements IRepository
+class DiscountRepository implements IRepository
 {
     protected $model;
 
-    public function __construct(User $model)
+    public function __construct(Discount $model)
     {
         $this->model = $model;
     }
