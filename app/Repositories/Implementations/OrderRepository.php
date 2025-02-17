@@ -2,14 +2,14 @@
 
 namespace App\Repositories\Implementations;
 
-use App\Models\User;
-use App\Repositories\Contracts\IUserRepository;
+use App\Models\Order;
+use App\Repositories\Contracts\IOrderRepository;
 
-class UserRepository implements IUserRepository
+class OrderRepository implements IOrderRepository
 {
     protected $model;
 
-    public function __construct(User $model)
+    public function __construct(Order $model)
     {
         $this->model = $model;
     }
@@ -39,4 +39,5 @@ class UserRepository implements IUserRepository
     {
         return $this->model->destroy($id);
     }
+    
 }

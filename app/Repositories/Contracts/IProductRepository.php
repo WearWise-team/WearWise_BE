@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Contracts;
 
-interface IUserRepository
+interface IProductRepository
 {
     public function getAll();
     public function findById(int $id);

@@ -2,14 +2,14 @@
 
 namespace App\Repositories\Implementations;
 
-use App\Models\User;
-use App\Repositories\Contracts\IUserRepository;
+use App\Models\Wishlist;
+use App\Repositories\Contracts\IWishlistRepository;
 
-class UserRepository implements IUserRepository
+class WishlistRepository implements IWishlistRepository
 {
     protected $model;
 
-    public function __construct(User $model)
+    public function __construct(Wishlist $model)
     {
         $this->model = $model;
     }

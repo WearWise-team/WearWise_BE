@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Contracts;
 
-interface IUserRepository
+interface IDiscount_AssignmentRepository
 {
     public function getAll();
     public function findById(int $id);

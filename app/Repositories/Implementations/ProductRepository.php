@@ -1,15 +1,14 @@
 <?php
-
 namespace App\Repositories\Implementations;
 
-use App\Models\User;
-use App\Repositories\Contracts\IUserRepository;
+use App\Models\Product;
+use App\Repositories\Contracts\IProductRepository;
 
-class UserRepository implements IUserRepository
+class ProductRepository implements IProductRepository
 {
     protected $model;
 
-    public function __construct(User $model)
+    public function __construct(Product $model)
     {
         $this->model = $model;
     }
@@ -39,4 +38,6 @@ class UserRepository implements IUserRepository
     {
         return $this->model->destroy($id);
     }
+    
 }
+?>

@@ -2,14 +2,14 @@
 
 namespace App\Repositories\Implementations;
 
-use App\Models\User;
-use App\Repositories\Contracts\IUserRepository;
+use App\Models\Cart_Item;
+use App\Repositories\Contracts\ICart_ItemRepository;
 
-class UserRepository implements IUserRepository
+class Cart_ItemRepository implements ICart_ItemRepository
 {
     protected $model;
 
-    public function __construct(User $model)
+    public function __construct(Cart_Item $model)
     {
         $this->model = $model;
     }
@@ -39,4 +39,7 @@ class UserRepository implements IUserRepository
     {
         return $this->model->destroy($id);
     }
-}
+    
+}   
+
+?>

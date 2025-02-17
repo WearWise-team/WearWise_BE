@@ -2,14 +2,14 @@
 
 namespace App\Repositories\Implementations;
 
-use App\Models\User;
-use App\Repositories\Contracts\IUserRepository;
+use App\Models\Discount_Assignment;
+use App\Repositories\Contracts\IDiscount_AssignmentRepository;
 
-class UserRepository implements IUserRepository
+class Discount_AssignmentRepository implements IDiscount_AssignmentRepository
 {
     protected $model;
 
-    public function __construct(User $model)
+    public function __construct(Discount_Assignment $model)
     {
         $this->model = $model;
     }
@@ -39,4 +39,7 @@ class UserRepository implements IUserRepository
     {
         return $this->model->destroy($id);
     }
+    
 }
+
+?>

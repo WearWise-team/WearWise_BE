@@ -2,9 +2,31 @@
 
 namespace App\Providers;
 
+use App\Repositories\Contracts\ICart_ItemRepository;
+use App\Repositories\Contracts\ICartRepository;
+use App\Repositories\Contracts\IDiscount_AssignmentRepository;
+use App\Repositories\Contracts\IDiscountRepository;
+use App\Repositories\Contracts\IOrder_ItemRepository;
+use App\Repositories\Contracts\IOrderRepository;
+use App\Repositories\Contracts\IProductRepository;
+use App\Repositories\Implementations\OrderRepository;
+use App\Repositories\Implementations\WishlistRepository;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\Contracts\IReviewRepository;
+use App\Repositories\Contracts\ISizeRepository;
+use App\Repositories\Contracts\ISupplierRepository;
 use App\Repositories\Contracts\IUserRepository;
+use App\Repositories\Contracts\IWishlistRepository;
+use App\Repositories\Implementations\Cart_ItemRepository;
+use App\Repositories\Implementations\CartRepository;
+use App\Repositories\Implementations\Discount_AssignmentRepository;
+use App\Repositories\Implementations\DiscountRepository;
+use App\Repositories\Implementations\Order_ItemRepository;
 use App\Repositories\Implementations\UserRepository;
+use App\Repositories\Implementations\ProductRepository;
+use App\Repositories\Implementations\ReviewRepository;
+use App\Repositories\Implementations\SizeRepository;
+use App\Repositories\Implementations\SupplierRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,6 +36,17 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(IUserRepository::class, UserRepository::class);
+        $this->app->bind(ISupplierRepository::class, SupplierRepository::class);
+        $this->app->bind(IProductRepository::class, ProductRepository::class);
+        $this->app->bind(IReviewRepository::class, ReviewRepository::class);
+        $this->app->bind(IWishlistRepository::class, WishlistRepository::class);
+        $this->app->bind(IOrderRepository::class, OrderRepository::class);
+        $this->app->bind(ICartRepository::class, CartRepository::class);
+        $this->app->bind(IDiscountRepository::class, DiscountRepository::class);
+        $this->app->bind(IOrder_ItemRepository::class, Order_ItemRepository::class);
+        $this->app->bind(ICart_ItemRepository::class, Cart_ItemRepository::class);
+        $this->app->bind(IDiscount_AssignmentRepository::class, Discount_AssignmentRepository::class);
+        $this->app->bind(ISizeRepository::class, SizeRepository::class);
     }
 
     /**
