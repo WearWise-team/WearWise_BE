@@ -35,6 +35,7 @@ use App\Services\Contracts\IOrderService;
 use App\Services\Contracts\ISupplierService;
 use App\Services\Contracts\IUserService;
 use App\Services\Contracts\IWishlistService;
+use App\Services\Contracts\IProductService;
 use App\Services\Implementations\CartService;
 use App\Services\Implementations\DiscountService;
 use App\Services\Implementations\OrderService;
@@ -67,7 +68,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(IUserService::class, UserService::class);
         $this->app->bind(ISupplierService::class, SupplierService::class);
-        $this->app->bind(IProductRepository::class, ProductService::class);
+        $this->app->bind(IProductService::class, ProductService::class);
         $this->app->bind(IReviewService::class, ReviewService::class);
         $this->app->bind(IOrderService::class, OrderService::class);
         $this->app->bind(ICartService::class, CartService::class);

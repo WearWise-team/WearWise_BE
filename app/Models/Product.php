@@ -10,7 +10,7 @@ class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory, SoftDeletes;
-    
+
     protected $table = 'products';
 
     protected $fillable = [
@@ -18,7 +18,8 @@ class Product extends Model
         'price',
         'description',
         'image',
-        'quantity'
+        'quantity',
+        'supplier_id',
     ];
 
     public function supplier()
@@ -30,7 +31,7 @@ class Product extends Model
     {
         return $this->hasMany(Wishlist::class);
     }
-    
+
     public function cart_items()
     {
         return $this->hasMany(Cart_Item::class);
@@ -40,18 +41,19 @@ class Product extends Model
     {
         return $this->hasMany(Review::class);
     }
-     
+
     public function order_items()
     {
         return $this->hasMany(Order_Item::class);
     }
 
-    public function discount_assignment(){
+    public function discount_assignment()
+    {
         return $this->hasMany(Discount_Assignment::class);
     }
-    
-    public function size(){
+
+    public function size()
+    {
         return $this->hasMany(Size::class);
     }
-    
 }
