@@ -11,7 +11,8 @@ class ProductRequestDTO extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        // Thay đổi giá trị này thành true nếu bạn muốn kiểm tra quyền truy cập của người dùng
+        return true;
     }
 
     /**
@@ -22,7 +23,29 @@ class ProductRequestDTO extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'description' => 'nullable|string',
+            'image' => 'nullable|url|max:2048', 
+            'quantity' => 'required|integer|min:0',
+            'supplier_id' => 'required|integer|min:0',
+        ];
+    }
+
+    /**
+     * Get custom attribute names for validator errors.
+     *
+     * @return array
+     */
+    public function attributes(): array
+    {
+        return [
+            'name' => 'product name',
+            'price' => 'product price',
+            'description' => 'product description',
+            'image' => 'product image',
+            'quantity' => 'product quantity',
+            'supplier_id' => 'product supplier',
         ];
     }
 }

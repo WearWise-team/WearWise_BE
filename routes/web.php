@@ -16,6 +16,3 @@ Route::get('/test-db', function () {
         return 'Database connection failed: ' . $e->getMessage();
     }
 });
-
-Route::get('/users', [UserController::class, 'index']);
-Route::post('/stripe/users', [UserController::class, 'store']);
