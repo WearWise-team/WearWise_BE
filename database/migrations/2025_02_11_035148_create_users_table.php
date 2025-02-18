@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string(column: 'role')->nullable();
             $table->string('phone')->nullable();
-            $table->string('avatar')->default('https://s.net.vn/76Th');
+            $table->string('avatar')->default('https://s.net.vn/76Th')->nullable();
             $table->string('weight')->nullable();
             $table->string('height')->nullable();
             $table->string('shirt_size')->nullable();
