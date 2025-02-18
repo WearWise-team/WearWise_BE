@@ -18,7 +18,8 @@ class Product extends Model
         'price',
         'description',
         'image',
-        'quantity'
+        'quantity',
+        'supplier_id'
     ];
 
     public function supplier()

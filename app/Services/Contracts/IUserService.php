@@ -7,6 +7,6 @@ interface IUserService
     public function getAllUsers();
     public function getUserById(int $id);
     public function createUser(array $data);
-    public function updateUser(array $data, int $id);
+    public function updateUser( int $id, array $data);
     public function deleteUser(int $id);
 }
