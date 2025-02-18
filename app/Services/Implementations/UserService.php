@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Implementations;
 
 use App\Repositories\Contracts\IUserRepository;
+
 
 class UserService
 {
@@ -25,6 +26,7 @@ class UserService
 
     public function createUser(array $data)
     {
+        $data['password'] = bcrypt($data['password']);
         return $this->userRepository->create($data);
     }
 

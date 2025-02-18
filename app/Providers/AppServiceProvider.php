@@ -11,6 +11,8 @@ use App\Repositories\Contracts\IOrderRepository;
 use App\Repositories\Contracts\IProductRepository;
 use App\Repositories\Implementations\OrderRepository;
 use App\Repositories\Implementations\WishlistRepository;
+use App\Services\Contracts\IReviewService;
+use App\Services\Contracts\ISizeService;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\Contracts\IReviewRepository;
 use App\Repositories\Contracts\ISizeRepository;
@@ -27,6 +29,21 @@ use App\Repositories\Implementations\ProductRepository;
 use App\Repositories\Implementations\ReviewRepository;
 use App\Repositories\Implementations\SizeRepository;
 use App\Repositories\Implementations\SupplierRepository;
+use App\Services\Contracts\ICartService;
+use App\Services\Contracts\IDiscountService;
+use App\Services\Contracts\IOrderService;
+use App\Services\Contracts\ISupplierService;
+use App\Services\Contracts\IUserService;
+use App\Services\Contracts\IWishlistService;
+use App\Services\Implementations\CartService;
+use App\Services\Implementations\DiscountService;
+use App\Services\Implementations\OrderService;
+use App\Services\Implementations\ProductService;
+use App\Services\Implementations\ReviewService;
+use App\Services\Implementations\SizeService;
+use App\Services\Implementations\SupplierService;
+use App\Services\Implementations\UserService;
+use App\Services\Implementations\WishlistService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -47,6 +64,16 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ICart_ItemRepository::class, Cart_ItemRepository::class);
         $this->app->bind(IDiscount_AssignmentRepository::class, Discount_AssignmentRepository::class);
         $this->app->bind(ISizeRepository::class, SizeRepository::class);
+
+        $this->app->bind(IUserService::class, UserService::class);
+        $this->app->bind(ISupplierService::class, SupplierService::class);
+        $this->app->bind(IProductRepository::class, ProductService::class);
+        $this->app->bind(IReviewService::class, ReviewService::class);
+        $this->app->bind(IOrderService::class, OrderService::class);
+        $this->app->bind(ICartService::class, CartService::class);
+        $this->app->bind(IWishlistService::class, WishlistService::class);
+        $this->app->bind(IDiscountService::class, DiscountService::class);
+        $this->app->bind(ISizeService::class, SizeService::class);
     }
 
     /**
