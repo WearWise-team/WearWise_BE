@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Repositories\Contracts\IAuthRepository;
 use App\Repositories\Contracts\ICart_ItemRepository;
 use App\Repositories\Contracts\ICartRepository;
 use App\Repositories\Contracts\IDiscount_AssignmentRepository;
@@ -19,6 +20,7 @@ use App\Repositories\Contracts\ISizeRepository;
 use App\Repositories\Contracts\ISupplierRepository;
 use App\Repositories\Contracts\IUserRepository;
 use App\Repositories\Contracts\IWishlistRepository;
+use App\Repositories\Implementations\AuthRepository;
 use App\Repositories\Implementations\Cart_ItemRepository;
 use App\Repositories\Implementations\CartRepository;
 use App\Repositories\Implementations\Discount_AssignmentRepository;
@@ -29,6 +31,7 @@ use App\Repositories\Implementations\ProductRepository;
 use App\Repositories\Implementations\ReviewRepository;
 use App\Repositories\Implementations\SizeRepository;
 use App\Repositories\Implementations\SupplierRepository;
+use App\Services\Contracts\IAuthService;
 use App\Services\Contracts\ICartService;
 use App\Services\Contracts\IDiscountService;
 use App\Services\Contracts\IOrderService;
@@ -36,6 +39,7 @@ use App\Services\Contracts\IProductService;
 use App\Services\Contracts\ISupplierService;
 use App\Services\Contracts\IUserService;
 use App\Services\Contracts\IWishlistService;
+use App\Services\Implementations\AuthService;
 use App\Services\Implementations\CartService;
 use App\Services\Implementations\DiscountService;
 use App\Services\Implementations\OrderService;
