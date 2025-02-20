@@ -2,9 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Faker\Generator as Faker;
+use Illuminate\Support\Facades\Bcrypt;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -12,33 +13,26 @@ use Illuminate\Support\Str;
 class UserFactory extends Factory
 {
     /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
-
-    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
      */
+    protected $model = User::class;
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'name' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'password' => bcrypt('password'), // Mật khẩu mặc định sử dụng bcrypt
+            'phone' => $this->faker->phoneNumber(),
+            'avatar' => $this->faker->imageUrl(200, 200, 'people'),
+            'address' => $this->faker->address(),
+            'role' => $this->faker->randomElement(['admin', 'user']),
+            'weight' => $this->faker->randomFloat(2, 40, 120),
+            'height' => $this->faker->randomFloat(2, 140, 200),
+            'shirt_size' => $this->faker->randomElement(['S', 'M', 'L', 'XL', 'XXL']),
+            'pant_size' => $this->faker->numberBetween(28, 40),
+            'gender' => $this->faker->randomElement(['male', 'female', 'other']),
         ];
-    }
-
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
     }
 }

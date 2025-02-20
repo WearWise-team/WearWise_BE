@@ -1,10 +1,13 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Implementations;
 
+use App\Models\User;
 use App\Repositories\Contracts\IUserRepository;
+use App\Services\Contracts\IUserService;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
-class UserService
+class UserService implements IUserService
 {
     protected $userRepository;
 
@@ -25,6 +28,14 @@ class UserService
 
     public function createUser(array $data)
     {
+        if (!empty($data['avatar'])) {
+            $uploadedFile = Cloudinary::upload($data['avatar']->getRealPath(), [
+                'folder' => 'avatars'
+            ]);
+            $data['avatar'] = $uploadedFile->getSecurePath(); // Lấy URL ảnh
+        }
+
+        $data['password'] = bcrypt($data['password']);
         return $this->userRepository->create($data);
     }
 
