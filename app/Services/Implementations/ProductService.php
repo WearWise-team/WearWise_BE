@@ -38,4 +38,9 @@ class ProductService implements IProductService
     {
         return $this->productRepository->delete($id);
     }
+
+    public function searchProductByName(string $name)
+    {
+        return $this->productRepository->search($name);
+    }
 }
