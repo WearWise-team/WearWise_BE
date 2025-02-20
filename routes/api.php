@@ -14,9 +14,15 @@ Route::delete('products/{id}', [ProductController::class, 'destroy']);
 
 Route::apiResource('users', controller: UserController::class);
 
-Route::namespace(value: 'api')->group(function () {
-    Route::post('signin', action: [AuthController::class, 'signin']);
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'auth'
+
+], function ($router) {
     Route::post('signup', [AuthController::class, 'signup']);
+    Route::match(['get', 'post'], 'login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('profile', [AuthController::class, 'profile']);
+    // Route::post('refresh', 'AuthController@refresh');
+    Route::get('profile', [AuthController::class, 'me']);
 });
