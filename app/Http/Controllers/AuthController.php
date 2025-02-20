@@ -41,51 +41,80 @@ class AuthController extends Controller
     }
 
     public function login(Request $request): JsonResponse
-{
-    $validator = Validator::make($request->all(), [
-        'email' => 'required|string|email',
-        'password' => 'required|string',
-    ]);
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
 
-    if ($validator->fails()) {
-        return response()->json([
-            'response' => 'error',
-            'errors' => $validator->errors()->all()
-        ], 400);
-    }
-
-    try {
-        if (!$token = JWTAuth::attempt($request->only('email', 'password')))
-        {
+        if ($validator->fails()) {
             return response()->json([
                 'response' => 'error',
-                'message' => 'Invalid email or password'
-            ], 401);
+                'errors' => $validator->errors()->all()
+            ], 400);
         }
 
-        $user = auth()->user();
+        try {
+            if (!$token = JWTAuth::attempt($request->only('email', 'password')))
+            {
+                return response()->json([
+                    'response' => 'error',
+                    'message' => 'Invalid email or password'
+                ], 401);
+            }
 
-        return response()->json([
-            'response' => 'success',
-            'result' => [
-                'token' => $this->respondWithToken($token),
-                'user' => [
-                    'id' => $user->id,
-                    'email' => $user->email,
-                    'name' => $user->name,
-                    'avatar' => $user->avatar,
-                    'phone' => $user->phone,
-                    'role' => $user->role
+            $user = auth()->user();
+
+            return response()->json([
+                'response' => 'success',
+                'result' => [
+                    'token' => $this->respondWithToken($token),
+                    'user' => [
+                        'id' => $user->id,
+                        'email' => $user->email,
+                        'name' => $user->name,
+                        'avatar' => $user->avatar,
+                        'phone' => $user->phone,
+                        'role' => $user->role
+                    ],
                 ],
-            ],
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'response' => 'error',
-            'message' => 'Something went wrong, please try again'
-        ], 500);
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'response' => 'error',
+                'message' => 'Something went wrong, please try again'
+            ], 500);
+        }
     }
-}
+
+    public function logout(Request $request)
+    {
+        try {
+            // Kiểm tra người dùng đã đăng nhập chưa
+            if (!JWTAuth::parseToken()->authenticate()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Unauthorized'
+                ], 401);
+            }
+
+            JWTAuth::invalidate(JWTAuth::getToken());
+
+            return response()->json([
+                'message' => 'Successfully logged out'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to logout, token might be invalid or expired'
+            ], 400);
+        }
+    }
+
+    public function me()
+    {
+        return response()->json(auth('api')->user());
+    }
 
     protected function respondWithToken(string $token): JsonResponse
     {
@@ -94,34 +123,5 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => JWTAuth::factory()->getTTL() * 60
         ]);
-    }
-
-    public function logout(Request $request)
-{
-    try {
-        // Kiểm tra người dùng đã đăng nhập chưa
-        if (!JWTAuth::parseToken()->authenticate()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Unauthorized'
-            ], 401);
-        }
-
-        JWTAuth::invalidate(JWTAuth::getToken());
-
-        return response()->json([
-            'message' => 'Successfully logged out'
-        ], 200);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => false,
-            'message' => 'Failed to logout, token might be invalid or expired'
-        ], 400);
-    }
-}
-
-    public function me()
-    {
-        return response()->json(auth('api')->user());
     }
 }

@@ -80,4 +80,11 @@ class ProductController extends Controller
 
         return response()->json(null, 204);
     }
+
+    public function search(Request $request)
+    {
+        $name = $request -> input('name');
+        $products = $this->productService->searchProductByName($name);
+        return response() -> json($products);
+    }
 }

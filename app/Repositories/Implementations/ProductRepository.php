@@ -38,6 +38,11 @@ class ProductRepository implements IProductRepository
     {
         return $this->model->destroy($id);
     }
+
+    public function search(string $name)
+    {
+        return $this->model::where('name', 'LIKE', "%{$name}%") -> get();
+    }
     
 }
 ?>
