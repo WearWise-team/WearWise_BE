@@ -41,7 +41,7 @@ class ProductRepository implements IProductRepository
 
     public function search(string $name)
     {
-        return $this->model::where('name', 'LIKE', "%{$name}%") -> get();
+        return Product::where('name', 'LIKE', "%$name%")->get();
     }
     
 }
