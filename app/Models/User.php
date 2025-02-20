@@ -3,16 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class User extends Model
+class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, SoftDeletes;
+    use Notifiable;
+    use HasApiTokens;
 
     protected $table = 'users';
     protected $fillable = [
@@ -58,9 +60,7 @@ class User extends Model
 
     public function getJWTCustomClaims()
     {
-        return [
-            'id' => $this->id
-        ];
+        return [];
     }
     
 }
