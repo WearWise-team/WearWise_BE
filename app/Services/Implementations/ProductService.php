@@ -43,4 +43,8 @@ class ProductService implements IProductService
     {
         return $this->productRepository->search($name);
     }
+    public function filterProduct(array $filters)
+    {
+        return $this->productRepository->filterProduct($filters);
+    }
 }
