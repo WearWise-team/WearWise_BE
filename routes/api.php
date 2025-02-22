@@ -13,6 +13,8 @@ Route::put('products/{id}', [ProductController::class, 'update']);
 Route::delete('products/{id}', [ProductController::class, 'destroy']);
 Route::post('/products/search', [ProductController::class, 'searchProductByName']);
 Route::get('/products/more/{id}', [ProductController::class, 'getProductDetails']);
+Route::post('/products/filter', [ProductController::class, 'filterProduct']);
+
 
 Route::apiResource('users', controller: UserController::class);
 

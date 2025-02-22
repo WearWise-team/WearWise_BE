@@ -11,4 +11,5 @@ interface IProductRepository
     public function delete(int $id);
     public function search(string $name);
     public function GetProductDetails(int $id);
+    public function filterProduct(array $filters);
 }

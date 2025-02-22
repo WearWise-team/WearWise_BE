@@ -14,14 +14,13 @@ class Discount extends Model
 
     protected $fillable = [
         'code',
-        'description',
-        'start_date',
-        'end_date',
-        'percentage'
+        'description'
     ];
 
-    public function discount_assignment()
+    public function products()
     {
-        return $this->hasMany(Discount_Assignment::class);
+        return $this->belongsToMany(Product::class, 'discount_assignments', 'discount_id', 'product_id')
+        ->withPivot('start_date', 'end_date', 'percentage')
+        ->withTimestamps();
     }
 }

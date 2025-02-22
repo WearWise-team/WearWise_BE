@@ -6,24 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Discount_Assignment extends Model
+class Image extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'discount_assignments';
-    
-    protected $fillable = [
-        'discount_id',
-        'product_id',
-        'start_date',
-        'end_date',
-        'percentage'
-    ];
+    protected $table = 'images';
 
-    public function discount()
-    {
-        return $this->belongsTo(Discount::class);
-    }
+    protected $fillable = [
+        'product_id',
+        'url'
+    ];
 
     public function product()
     {

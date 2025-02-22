@@ -11,4 +11,5 @@ interface IProductService
     public function deleteProduct(int $id);
     public function searchProductByName(string $name);
     public function getProductDetails(int $id);
+    public function filterProduct(array $filters);
 }

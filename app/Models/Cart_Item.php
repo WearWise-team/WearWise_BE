@@ -17,14 +17,6 @@ class Cart_Item extends Model
         'product_id',
         'quantity'
     ];
+    public $timestamps = true;
 
-    public function cart()
-    {
-        return $this->belongsTo(Cart::class);
-    }
-
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
-    }
 }

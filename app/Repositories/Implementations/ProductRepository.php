@@ -156,4 +156,27 @@ class ProductRepository implements IProductRepository
 
         return $product;
     }
+    public function filterProduct(array $filters)
+    {
+        $query = $this->model->query();
+
+        if (!empty($filters['color'])) {
+            $query->where('color', $filters['color']);
+        }
+
+        if (!empty($filters['category'])) {
+            $query->where('category', $filters['category']);
+        }
+
+        if (!empty($filters['min_price'])) {
+            $query->where('price', '>=', $filters['min_price']);
+        }
+
+        if (!empty($filters['max_price'])) {
+            $query->where('price', '<=', $filters['max_price']);
+        }
+
+        return $query->get();
+    }
+
 }
