@@ -52,6 +52,11 @@ class Product extends Model
         return $this->hasMany(Discount_Assignment::class);
     }
 
+    public function discounts()
+    {
+        return $this->belongsToMany(Discount::class, 'discount_assignments', 'product_id', 'discount_id');
+    }
+
     public function size()
     {
         return $this->hasMany(Size::class);
