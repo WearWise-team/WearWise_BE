@@ -92,4 +92,13 @@ class ProductController extends Controller
 
         return response()->json($products);
     }
+
+    public function filterProduct(Request $request)
+    {
+        $filters = $request->all();
+
+        $products = $this->productService->filterProduct($filters);
+
+        return response()->json($products);
+    }
 }
