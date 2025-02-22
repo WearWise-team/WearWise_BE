@@ -54,7 +54,7 @@ class Product extends Model
 
     public function discounts()
     {
-        return $this->belongsToMany(Discount::class, 'discount_items', 'product_id', 'discount_id')
+        return $this->belongsToMany(Discount::class, 'discount_assignments', 'product_id', 'discount_id')
             ->withPivot('start_date', 'end_date', 'percentage')
             ->withTimestamps();
     }
