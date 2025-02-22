@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description')->nullable();
+            $table->string('category');
             $table->decimal('price');
             $table->integer('quantity');
             $table->string('image');
@@ -38,7 +39,34 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
         });
+
+        Schema::create('colors', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->softDeletes();
+            $table->timestamps();
+        });
+        
+        Schema::create('product_colors', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('color_id');
+            $table->foreign('product_id')->references('id')->on('products');
+            $table->foreign('color_id')->references('id')->on('colors');
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+        Schema::create('images', function (Blueprint $table) {
+            $table->id();
+            $table->string('url');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('products');
+            $table->softDeletes();
+            $table->timestamps();
+        });
     }
+    
 
     /**
      * Reverse the migrations.
@@ -47,5 +75,8 @@ return new class extends Migration
     {
         Schema::dropIfExists('products');
         Schema::dropIfExists('size');
+        Schema::dropIfExists('colors');
+        Schema::dropIfExists('product_colors');
+        Schema::dropIfExists('images');
     }
 };

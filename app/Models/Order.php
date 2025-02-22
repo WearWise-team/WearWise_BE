@@ -25,8 +25,10 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
     
-    public function order_items()
+    public function products()
     {
-        return $this->hasMany(Order_Item::class);
+        return $this->belongsToMany(Product::class, 'order_items', 'order_id', 'product_id')
+            ->withPivot('quantity', 'price')
+            ->withTimestamps();
     }
 }

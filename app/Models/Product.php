@@ -18,6 +18,7 @@ class Product extends Model
         'price',
         'description',
         'image',
+        'category',
         'quantity',
         'supplier_id',
     ];
@@ -32,9 +33,11 @@ class Product extends Model
         return $this->hasMany(Wishlist::class);
     }
 
-    public function cart_items()
+    public function carts()
     {
-        return $this->hasMany(Cart_Item::class);
+        return $this->belongsToMany(Cart::class, 'cart_items', 'product_id', 'cart_id')
+            ->withPivot('quantity')
+            ->withTimestamps();
     }
 
     public function reviews()
@@ -42,18 +45,32 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
-    public function order_items()
+    public function orders()
     {
-        return $this->hasMany(Order_Item::class);
+        return $this->belongsToMany(Order::class, 'order_items', 'product_id', 'order_id')
+            ->withPivot('quantity', 'price')
+            ->withTimestamps();
     }
 
-    public function discount_assignment()
+    public function discounts()
     {
-        return $this->hasMany(Discount_Assignment::class);
+        return $this->belongsToMany(Discount::class, 'discount_items', 'product_id', 'discount_id')
+            ->withPivot('start_date', 'end_date', 'percentage')
+            ->withTimestamps();
     }
 
     public function size()
     {
         return $this->hasMany(Size::class);
     }
+    public function color()
+    {
+        return $this->belongsToMany(Color::class, 'product_colors', 'product_id', 'color_id')
+            ->withTimestamps();
+    }
+    public function image()
+    {
+        return $this->hasMany(Image::class);
+    }
+
 }
