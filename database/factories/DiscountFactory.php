@@ -21,9 +21,7 @@ class DiscountFactory extends Factory
         return [
             'code' => $this->faker->unique()->bothify('DISC###'),
             'description' => $this->faker->sentence(),
-            'start_date' => $this->faker->dateTimeBetween('-1 month', 'now'),
-            'end_date' => $this->faker->dateTimeBetween('now', '+1 month'),
-            'percentage' => $this->faker->numberBetween(5, 50),
+            
         ];
     }
 }

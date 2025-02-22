@@ -26,7 +26,7 @@ class OrderFactory extends Factory
             'order_date' => $this->faker->dateTimeThisYear(),
             'payment_method' => $this->faker->randomElement(['cash', 'momo', 'vnpay']),
             'total_amount' => $this->faker->randomFloat(2, 10, 1000),
-            'status' => $this->faker->randomElement(['pending', 'processing', 'completed', 'cancelled']),
+            'status' => $this->faker->randomElement(['pending', 'completed', 'canceled']),
         ];
     }
 }
