@@ -57,6 +57,9 @@ class ProductRepository implements IProductRepository
             ->leftJoin('suppliers', 'products.supplier_id', '=', 'suppliers.id')
             ->leftJoin('discount_assignments', 'products.id', '=', 'discount_assignments.product_id')
             ->leftJoin('discounts', 'discount_assignments.discount_id', '=', 'discounts.id')
+            ->leftJoin('images', 'images.product_id', '=', 'products.id')
+            ->leftJoin('product_colors', 'product_colors.product_id', '=', 'products.id')
+            ->leftJoin('colors', 'product_colors.color_id', '=', 'colors.id')
             ->select(
                 'products.id as product_id',
                 'products.name as product_name',
@@ -77,12 +80,17 @@ class ProductRepository implements IProductRepository
                 'size.minimun_height',
                 'size.maximun_height',
                 'size.target_audience',
+                'images.id as image_id',
+                'images.url as image_url',
+                'colors.id as color_id',
+                'colors.name as color_name',
+                'colors.code as color_code',
                 'discounts.id as discount_id',
                 'discounts.code as discount_code',
                 'discounts.description as discount_description',
-                'discounts.start_date',
-                'discounts.end_date',
-                'discounts.percentage',
+                'discount_assignments.start_date',
+                'discount_assignments.end_date',
+                'discount_assignments.percentage',
                 'reviews.id as review_id',
                 'reviews.content as review_content',
                 'reviews.rating',
@@ -96,7 +104,6 @@ class ProductRepository implements IProductRepository
             return null;
         }
 
-        // Nhóm dữ liệu thành JSON có cấu trúc theo từng bảng
         $product = [
             'id' => $productData[0]->product_id,
             'name' => $productData[0]->product_name,
@@ -112,12 +119,20 @@ class ProductRepository implements IProductRepository
                 'address' => $productData[0]->supplier_address,
             ],
             'sizes' => [],
+            'images' => [],
+            'colors' => [],
             'discounts' => [],
             'reviews' => []
         ];
 
+        $addedSizes = [];
+        $addedImages = [];
+        $addedColors = [];
+        $addedDiscounts = [];
+        $addedReviews = [];
+
         foreach ($productData as $row) {
-            if ($row->review_id) {
+            if ($row->review_id && !in_array($row->review_id, $addedReviews)) {
                 $product['reviews'][] = [
                     'id' => $row->review_id,
                     'content' => $row->review_content,
@@ -127,9 +142,10 @@ class ProductRepository implements IProductRepository
                         'name' => $row->user_name
                     ]
                 ];
+                $addedReviews[] = $row->review_id;
             }
 
-            if ($row->size_id) {
+            if ($row->size_id && !in_array($row->size_id, $addedSizes)) {
                 $product['sizes'][] = [
                     'id' => $row->size_id,
                     'shirt_size' => $row->shirt_size,
@@ -140,22 +156,44 @@ class ProductRepository implements IProductRepository
                     'maximun_height' => $row->maximun_height,
                     'target_audience' => $row->target_audience
                 ];
+                $addedSizes[] = $row->size_id;
             }
 
-            if ($row->discount_id) {
+            if ($row->discount_id && !in_array($row->discount_id, $addedDiscounts)) {
                 $product['discounts'][] = [
                     'id' => $row->discount_id,
                     'code' => $row->discount_code,
                     'description' => $row->discount_description,
+                    'percentage' => $row->percentage,
                     'start_date' => $row->start_date,
-                    'end_date' => $row->end_date,
-                    'percentage' => $row->percentage
+                    'end_date' => $row->end_date
                 ];
+                $addedDiscounts[] = $row->discount_id;
+            }
+
+            if ($row->image_id && !in_array($row->image_id, $addedImages)) {
+                $product['images'][] = [
+                    'id' => $row->image_id,
+                    'url' => $row->image_url
+                ];
+                $addedImages[] = $row->image_id;
+            }
+
+            if ($row->color_id && !in_array($row->color_id, $addedColors)) {
+                $product['colors'][] = [
+                    'id' => $row->color_id,
+                    'name' => $row->color_name,
+                    'code' => $row->color_code
+                ];
+                $addedColors[] = $row->color_id;
             }
         }
 
         return $product;
     }
+
+
+
     public function filterProduct(array $filters)
     {
         $query = $this->model->query();
@@ -178,5 +216,4 @@ class ProductRepository implements IProductRepository
 
         return $query->get();
     }
-
 }

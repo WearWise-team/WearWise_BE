@@ -20,6 +20,7 @@ class ColorFactory extends Factory
     {
         return [
             'name' => fake()->unique()->safeColorName(),
+            'code' => fake()->hexColor(),
         ];
     }
 }
