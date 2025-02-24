@@ -25,9 +25,6 @@ class Cart_ItemFactory extends Factory
             'cart_id' => function () {
                 return Cart::factory()->create()->id;
             },
-            'product_id' => function () {
-                return Product::factory()->create()->id;
-            },
             'product_variant_id' => function () {
                 return Product_variants::factory()->create()->id;
             },

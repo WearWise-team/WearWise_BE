@@ -202,16 +202,16 @@ class ProductRepository implements IProductRepository
             });
         }
 
-        if (!empty($filters['category'])) {
-            $query->where('category', $filters['category']);
+        if (!empty($filters['categories']) && is_array($filters['categories'])) {
+            $query->whereIn('category', $filters['categories']);
         }
 
-        if (!empty($filters['min_price'])) {
-            $query->where('price', '>=', $filters['min_price']);
+        if (!empty($filters['minPrice'])) {
+            $query->where('price', '>=', $filters['minPrice']);
         }
 
-        if (!empty($filters['max_price'])) {
-            $query->where('price', '<=', $filters['max_price']);
+        if (!empty($filters['maxPrice'])) {
+            $query->where('price', '<=', $filters['maxPrice']);
         }
 
         return $query->get();
