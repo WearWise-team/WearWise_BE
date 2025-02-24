@@ -53,7 +53,7 @@ class ProductRepository implements IProductRepository
         $productData = DB::table('products')
             ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
             ->leftJoin('users', 'reviews.user_id', '=', 'users.id')
-            ->leftJoin('size', 'size.product_id', '=', 'products.id')
+            ->leftJoin('sizes', 'sizes.product_id', '=', 'products.id')
             ->leftJoin('suppliers', 'products.supplier_id', '=', 'suppliers.id')
             ->leftJoin('discount_assignments', 'products.id', '=', 'discount_assignments.product_id')
             ->leftJoin('discounts', 'discount_assignments.discount_id', '=', 'discounts.id')
@@ -72,14 +72,14 @@ class ProductRepository implements IProductRepository
                 'suppliers.address as supplier_address',
                 'suppliers.avatar',
                 'suppliers.phone',
-                'size.id as size_id',
-                'size.shirt_size',
-                'size.pant_size',
-                'size.minimun_weight',
-                'size.maximun_weight',
-                'size.minimun_height',
-                'size.maximun_height',
-                'size.target_audience',
+                'sizes.id as size_id',
+                'sizes.shirt_size',
+                'sizes.pant_size',
+                'sizes.minimun_weight',
+                'sizes.maximun_weight',
+                'sizes.minimun_height',
+                'sizes.maximun_height',
+                'sizes.target_audience',
                 'images.id as image_id',
                 'images.url as image_url',
                 'colors.id as color_id',
