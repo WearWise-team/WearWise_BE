@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
         });
         
-        Schema::create('size', function (Blueprint $table) {
+        Schema::create('sizes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->string('shirt_size');
@@ -75,7 +75,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('products');
-        Schema::dropIfExists('size');
+        Schema::dropIfExists('sizes');
         Schema::dropIfExists('colors');
         Schema::dropIfExists('product_colors');
         Schema::dropIfExists('images');
