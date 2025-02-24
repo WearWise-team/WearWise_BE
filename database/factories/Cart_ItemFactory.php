@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Cart;
 use App\Models\Cart_Item;
 use App\Models\Product;
+use App\Models\Product_variants;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -26,6 +27,9 @@ class Cart_ItemFactory extends Factory
             },
             'product_id' => function () {
                 return Product::factory()->create()->id;
+            },
+            'product_variant_id' => function () {
+                return Product_variants::factory()->create()->id;
             },
             'quantity' => $this->faker->numberBetween(1, 10)
         ];
