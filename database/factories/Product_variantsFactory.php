@@ -3,14 +3,14 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Product_variants;
+use App\Models\Product_Variants;
 use App\Models\Product;
 use App\Models\Color;
 use App\Models\Size;
 
-class Product_variantsFactory extends Factory
+class Product_VariantsFactory extends Factory
 {
-    protected $model = Product_variants::class;
+    protected $model = Product_Variants::class;
 
     public function definition()
     {
