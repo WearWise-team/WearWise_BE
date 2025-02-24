@@ -192,14 +192,14 @@ class ProductRepository implements IProductRepository
         return $product;
     }
 
-
-
     public function filterProduct(array $filters)
     {
         $query = $this->model->query();
 
         if (!empty($filters['color'])) {
-            $query->where('color', $filters['color']);
+            $query->whereHas('color', function ($q) use ($filters) {
+                $q->where('name', $filters['color']);
+            });
         }
 
         if (!empty($filters['category'])) {

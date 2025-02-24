@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Size extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $table = 'size';
+    protected $table = 'sizes';
     
     protected $fillable = [
         'shirt_size',
