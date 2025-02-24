@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
         $middleware->validateCsrfTokens(
-            except: ['stripe/*', 'login', 'register']
+            except: ['stripe/*', 'login', 'register', 'search', 'api/*'] // Bỏ CSRF cho tất cả API
         );
     })
     ->withExceptions(function (Exceptions $exceptions) {

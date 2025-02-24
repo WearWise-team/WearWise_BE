@@ -25,5 +25,9 @@ class Size extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function product_variants() {
+        return $this->hasOne(Product_Variants::class);
+    }
     
 }
