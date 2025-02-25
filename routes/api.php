@@ -56,3 +56,4 @@ Route::group([
     // Route::post('refresh', 'AuthController@refresh');
     Route::get('profile', [AuthController::class, 'me']);
 });
+

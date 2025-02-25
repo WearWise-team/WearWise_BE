@@ -17,13 +17,16 @@ class WishlistController extends Controller
     public function index()
     {
         $wishlists = $this->wishlistService->getAllWishlists();
-        return response()->json($wishlists);
+        return response()->json([
+            'success' => true,
+            'message' => 'Show all wishlists successfully!',
+            'data' => $wishlists,
+        ]);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => 'required|integer',
             'product_id' => 'required|integer',
         ]);
 
@@ -34,16 +37,6 @@ class WishlistController extends Controller
     public function show($id)
     {
         $wishlist = $this->wishlistService->getWishlistById((int) $id);
-        return response()->json($wishlist);
-    }
-
-    public function update($id, Request $request)
-    {
-        $validated = $request->validate([
-            'product_id' => 'integer',
-        ]);
-
-        $wishlist = $this->wishlistService->updateWishlist($validated, (int) $id);
         return response()->json($wishlist);
     }
 

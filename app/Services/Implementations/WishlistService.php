@@ -2,8 +2,9 @@
 
 namespace App\Services\Implementations;
 use App\Repositories\Contracts\IWishlistRepository;
+use App\Services\Contracts\IWishlistService;
 
-class WishlistService
+class WishlistService implements IWishlistService
 {
     protected $wishlistRepository;
 
@@ -25,11 +26,6 @@ class WishlistService
     public function createWishlist(array $data)
     {
         return $this->wishlistRepository->create($data);
-    }
-
-    public function updateWishlist(int $id, array $data)
-    {
-        return $this->wishlistRepository->update($id, $data);
     }
 
     public function deleteWishlist(int $id)
