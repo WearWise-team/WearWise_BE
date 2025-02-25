@@ -14,17 +14,17 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('password');
-            $table->string('email')->unique();
             $table->string('address')->nullable();
-            $table->string(column: 'role')->nullable();
             $table->string('phone')->nullable();
-            $table->string('avatar')->default('https://s.net.vn/76Th')->nullable();
+            $table->string('avatar')->default('https://placehold.co/100x100')->nullable();
+            $table->string('email')->unique();
+            $table->string('password');
             $table->string('weight')->nullable();
             $table->string('height')->nullable();
             $table->string('shirt_size')->nullable();
-            $table->string('pant_size')->nullable();
             $table->string('gender')->nullable();
+            $table->string('pant_size')->nullable();
+            $table->string(column: 'role')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
