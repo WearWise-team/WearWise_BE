@@ -207,6 +207,7 @@ class ProductRepository implements IProductRepository
         if (!empty($filters['minPrice'])) {
             $query->where('price', '>=', $filters['minPrice']);
         }
+
         if (!empty($filters['maxPrice'])) {
             $query->where('price', '<=', $filters['maxPrice']);
         }
@@ -214,9 +215,9 @@ class ProductRepository implements IProductRepository
         // Lọc theo màu sắc
         if (!empty($filters['colors']) && is_array($filters['colors'])) {
             $query->whereHas('colors', function ($q) use ($filters) {
-                $q->whereIn('id', $filters['colors']); // Nếu lọc theo ID
+                // $q->whereIn('id', $filters['colors']); // Nếu lọc theo ID
                 // Hoặc:
-                // $q->whereIn('name', $filters['colors']); // Nếu lọc theo tên màu
+                $q->whereIn('name', $filters['colors']); // Nếu lọc theo tên màu
             });
         }
 
@@ -233,6 +234,7 @@ class ProductRepository implements IProductRepository
             $query->orderBy('price', $filters['sortPrice'] === 'asc' ? 'asc' : 'desc');
         }
 
-        return $query->get();
+        return $query->with(['colors', 'sizes'])->get();
     }
 }
+?>
