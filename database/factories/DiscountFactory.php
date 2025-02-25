@@ -19,7 +19,7 @@ class DiscountFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => $this->faker->unique()->bothify('DISC###'),
+            'code' => $this->faker->unique()->hexColor(),
             'description' => $this->faker->sentence(),
             
         ];

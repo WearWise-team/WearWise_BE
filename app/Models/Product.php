@@ -15,12 +15,13 @@ class Product extends Model
 
     protected $fillable = [
         'name',
-        'price',
         'description',
+        'price',
         'image',
-        'category',
         'quantity',
+        'category',
         'supplier_id',
+        'rating_avg'
     ];
 
     public function supplier()
@@ -33,11 +34,9 @@ class Product extends Model
         return $this->hasMany(Wishlist::class);
     }
 
-    public function carts()
+    public function cart_item()
     {
-        return $this->belongsToMany(Cart::class, 'cart_items', 'product_id', 'cart_id')
-            ->withPivot('quantity')
-            ->withTimestamps();
+        return $this->belongsTo(Cart_Item::class);
     }
 
     public function reviews()
@@ -59,18 +58,27 @@ class Product extends Model
             ->withTimestamps();
     }
 
-    public function size()
+    public function sizes()
     {
-        return $this->hasMany(Size::class);
+        return $this->belongsToMany(Size::class, 'product_sizes', 'product_id', 'size_id')
+            ->withTimestamps();
     }
-    public function color()
+
+    public function colors()
     {
         return $this->belongsToMany(Color::class, 'product_colors', 'product_id', 'color_id')
             ->withTimestamps();
     }
+
     public function image()
     {
         return $this->hasMany(Image::class);
     }
 
+    public function updateRatingAvg()
+    {
+        $avgRating = $this->reviews()->avg('rating');
+
+        $this->update(['rating_avg' => $avgRating]);
+    }
 }

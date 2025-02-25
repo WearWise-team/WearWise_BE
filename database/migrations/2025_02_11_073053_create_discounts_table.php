@@ -23,11 +23,11 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('discount_id');
             $table->unsignedBigInteger('product_id');
-            $table->foreign('discount_id')->references('id')->on('discounts');
-            $table->foreign('product_id')->references('id')->on('products');
             $table->date('start_date');
             $table->date('end_date');
             $table->decimal('percentage');
+            $table->foreign('discount_id')->references('id')->on('discounts');
+            $table->foreign('product_id')->references('id')->on('products');
             $table->softDeletes();
             $table->timestamps();
         });
