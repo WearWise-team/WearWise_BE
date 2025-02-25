@@ -22,9 +22,11 @@ return new class extends Migration
         Schema::create('cart_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('cart_id');
-            $table->unsignedBigInteger('product_variant_id');
+            $table->unsignedBigInteger('product_color_id');
+            $table->unsignedBigInteger('product_size_id');
             $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
-            $table->foreign('product_variant_id')->references('id')->on('product_variants')->onDelete('cascade');
+            $table->foreign('product_color_id')->references('id')->on('product_colors')->onDelete('cascade');
+            $table->foreign('product_size_id')->references('id')->on('product_sizes')->onDelete('cascade');
             $table->integer('quantity');
             $table->softDeletes();
             $table->timestamps();

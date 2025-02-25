@@ -6,17 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Order_Item extends Model
-{   
+class Product_Size extends Model
+{
     use HasFactory, SoftDeletes;
 
-    protected $table = 'order_items';
+    protected $table = 'product_sizes';
 
     protected $fillable = [
-        'order_id',
-        'quantity',
-        'product_color_id',
-        'product_size_id'
+        'product_id',
+        'size_id'
     ];
+
     public $timestamps = true;
 }

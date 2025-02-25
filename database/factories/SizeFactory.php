@@ -20,9 +20,6 @@ class SizeFactory extends Factory
     public function definition(): array
     {
         return [
-            'product_id' => function () {
-                return Product::factory()->create()->id;
-            },
             'shirt_size' => $this->faker->randomElement(['S', 'M', 'L', 'XL', 'XXL']),
             'pant_size' => $this->faker->numberBetween(28, 40),
             'minimun_weight' => $this->faker->numberBetween(40, 60),
