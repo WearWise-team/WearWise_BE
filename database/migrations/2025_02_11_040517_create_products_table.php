@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description')->nullable();
-            $table->string('category')->default('uncategorized');
             $table->decimal('price');
-            $table->integer('quantity');
-            $table->integer('rating_avg')->default(5);
             $table->string('image');
+            $table->integer('quantity');
+            $table->string('category')->default('uncategorized');
             $table->unsignedBigInteger('supplier_id');
+            $table->integer('rating_avg')->default(5);
             $table->foreign('supplier_id')->references('id')->on('suppliers');
             $table->softDeletes();
             $table->timestamps();
@@ -41,10 +41,10 @@ return new class extends Migration
 
         Schema::create('product_sizes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('size_id');
-            $table->foreign('product_id')->references('id')->on('products');
+            $table->unsignedBigInteger('product_id');
             $table->foreign('size_id')->references('id')->on('sizes');
+            $table->foreign('product_id')->references('id')->on('products');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -59,10 +59,10 @@ return new class extends Migration
 
         Schema::create('product_colors', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('color_id');
-            $table->foreign('product_id')->references('id')->on('products');
+            $table->unsignedBigInteger('product_id');
             $table->foreign('color_id')->references('id')->on('colors');
+            $table->foreign('product_id')->references('id')->on('products');
             $table->softDeletes();
             $table->timestamps();
         });

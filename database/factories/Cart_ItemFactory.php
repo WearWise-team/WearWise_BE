@@ -28,6 +28,7 @@ class Cart_ItemFactory extends Factory
             'quantity' => $this->faker->numberBetween(1, 10),
             'product_color_id' => Product_Color::inRandomOrder()->first()->id ?? Product_Color::factory()->create()->id,
             'product_size_id' => Product_Size::inRandomOrder()->first()->id ?? Product_Size::factory()->create()->id,
+            'product_id' => Product::all()->random()->id,
         ];
     }
 }

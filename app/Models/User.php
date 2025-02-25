@@ -36,17 +36,17 @@ class User extends Authenticatable implements JWTSubject
 
     public function wishlist()
     {
-        return $this->hasMany(Wishlist::class);
+        return $this-> hasMany(Wishlist::class);
     }
 
     public function order()
     {
-        return $this->hasMany(Order::class);
+        return $this-> hasMany(Order::class);
     }
 
     public function review()
     {
-        return $this->hasMany(Review::class);
+        return $this-> hasMany(Review::class);
     }
 
     public function cart()
