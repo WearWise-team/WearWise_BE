@@ -55,6 +55,13 @@ class ProductRepository implements IProductRepository
             });
         }
 
+        if (!empty($filters['size'])) {
+            $size = $filters['size'];
+            $query->whereHas('size', function ($q) use ($size) {
+                $q->where('name', $size);
+            });
+        }
+
         if (!empty($filters['category'])) {
             $query->where('category', $filters['category']);
         }
@@ -67,8 +74,7 @@ class ProductRepository implements IProductRepository
             $query->where('price', '<=', $filters['max_price']);
         }
 
-        return $query->get();
+        return $query->with(['color', 'size'])->get();
     }
-
 }
 ?>
