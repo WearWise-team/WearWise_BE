@@ -53,12 +53,13 @@ class ProductRepository implements IProductRepository
         $productData = DB::table('products')
             ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
             ->leftJoin('users', 'reviews.user_id', '=', 'users.id')
-            ->leftJoin('sizes', 'sizes.product_id', '=', 'products.id')
+            ->leftJoin('product_sizes', 'products.id', '=', 'product_sizes.product_id')
+            ->leftJoin('sizes', 'product_sizes.size_id', '=', 'sizes.id')
             ->leftJoin('suppliers', 'products.supplier_id', '=', 'suppliers.id')
             ->leftJoin('discount_assignments', 'products.id', '=', 'discount_assignments.product_id')
             ->leftJoin('discounts', 'discount_assignments.discount_id', '=', 'discounts.id')
             ->leftJoin('images', 'images.product_id', '=', 'products.id')
-            ->leftJoin('product_colors', 'product_colors.product_id', '=', 'products.id')
+            ->leftJoin('product_colors', 'products.id', '=', 'product_colors.product_id')
             ->leftJoin('colors', 'product_colors.color_id', '=', 'colors.id')
             ->select(
                 'products.id as product_id',
@@ -191,6 +192,7 @@ class ProductRepository implements IProductRepository
 
         return $product;
     }
+
 
     public function filterProduct(array $filters)
     {
