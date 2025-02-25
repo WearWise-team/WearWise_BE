@@ -60,16 +60,19 @@ class Product extends Model
             ->withTimestamps();
     }
 
-    public function size()
+    public function sizes()
     {
         return $this->belongsToMany(Size::class, 'product_sizes', 'product_id', 'size_id')
             ->withTimestamps();
     }
-    public function color()
+
+
+    public function colors()
     {
         return $this->belongsToMany(Color::class, 'product_colors', 'product_id', 'color_id')
             ->withTimestamps();
     }
+    
     public function image()
     {
         return $this->hasMany(Image::class);
@@ -79,6 +82,6 @@ class Product extends Model
     {
         $avgRating = $this->reviews()->avg('rating');
 
-        $this->update(['rating_avg' => $avgRating]); 
+        $this->update(['rating_avg' => $avgRating]);
     }
 }
