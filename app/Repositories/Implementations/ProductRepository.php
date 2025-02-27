@@ -45,8 +45,19 @@ class ProductRepository implements IProductRepository
 
     public function search(string $name)
     {
-        return Product::where('name', 'LIKE', "%$name%")->get();
+        return Product::where('name', 'LIKE', "%$name%")
+            ->with([
+                'discounts' => function ($q) {
+                    $q->select('discounts.id', 'discounts.code', 'discounts.description')
+                        ->withPivot('start_date', 'end_date', 'percentage');
+                },
+                'reviews' => function ($q) {
+                    $q->select('reviews.id', 'reviews.product_id', 'reviews.rating', 'reviews.content');
+                }
+            ])
+            ->get();
     }
+
 
     public function getProductDetails(int $id)
     {
@@ -215,26 +226,35 @@ class ProductRepository implements IProductRepository
         // Lọc theo màu sắc
         if (!empty($filters['colors']) && is_array($filters['colors'])) {
             $query->whereHas('colors', function ($q) use ($filters) {
-                // $q->whereIn('id', $filters['colors']); // Nếu lọc theo ID
-                // Hoặc:
-                $q->whereIn('name', $filters['colors']); // Nếu lọc theo tên màu
+                $q->whereIn('name', $filters['colors']);
             });
         }
 
         // Lọc theo kích thước
         if (!empty($filters['sizes']) && is_array($filters['sizes'])) {
-            $query->whereHas('productSizes.size', function ($q) use ($filters) {
+            $query->whereHas('sizes', function ($q) use ($filters) {
                 $q->whereIn('shirt_size', $filters['sizes'])
                     ->orWhereIn('pant_size', $filters['sizes']);
             });
         }
 
-        // Sắp xếp giá (low to high hoặc high to low)
+        // Sắp xếp theo giá
         if (!empty($filters['sortPrice'])) {
             $query->orderBy('price', $filters['sortPrice'] === 'asc' ? 'asc' : 'desc');
         }
 
-        return $query->with(['colors', 'sizes'])->get();
+        // Lấy thêm thông tin đánh giá và giảm giá
+        return $query->with([
+            'colors',
+            'sizes',
+            'reviews' => function ($q) {
+                $q->select('id', 'product_id', 'rating', 'content'); // Giới hạn cột trả về nếu cần
+            },
+            'discounts' => function ($q) {
+                $q->select('discounts.id', 'discounts.code', 'discounts.description')
+                    ->withPivot('start_date', 'end_date', 'percentage'); // Không cần join lại bảng trung gian
+            }
+
+        ])->get();
     }
 }
-?>
