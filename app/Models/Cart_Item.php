@@ -14,8 +14,9 @@ class Cart_Item extends Model
     
     protected $fillable = [
         'cart_id',
-        'product_id',
-        'quantity'
+        'quantity',
+        'product_color_id',
+        'product_size_id'
     ];
     public $timestamps = true;
 

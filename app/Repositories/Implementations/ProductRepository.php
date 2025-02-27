@@ -53,12 +53,13 @@ class ProductRepository implements IProductRepository
         $productData = DB::table('products')
             ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
             ->leftJoin('users', 'reviews.user_id', '=', 'users.id')
-            ->leftJoin('size', 'size.product_id', '=', 'products.id')
+            ->leftJoin('product_sizes', 'products.id', '=', 'product_sizes.product_id')
+            ->leftJoin('sizes', 'product_sizes.size_id', '=', 'sizes.id')
             ->leftJoin('suppliers', 'products.supplier_id', '=', 'suppliers.id')
             ->leftJoin('discount_assignments', 'products.id', '=', 'discount_assignments.product_id')
             ->leftJoin('discounts', 'discount_assignments.discount_id', '=', 'discounts.id')
             ->leftJoin('images', 'images.product_id', '=', 'products.id')
-            ->leftJoin('product_colors', 'product_colors.product_id', '=', 'products.id')
+            ->leftJoin('product_colors', 'products.id', '=', 'product_colors.product_id')
             ->leftJoin('colors', 'product_colors.color_id', '=', 'colors.id')
             ->select(
                 'products.id as product_id',
@@ -192,6 +193,7 @@ class ProductRepository implements IProductRepository
         return $product;
     }
 
+
     public function filterProduct(array $filters)
     {
         $query = $this->model->query();
@@ -202,16 +204,16 @@ class ProductRepository implements IProductRepository
             });
         }
 
-        if (!empty($filters['category'])) {
-            $query->where('category', $filters['category']);
+        if (!empty($filters['categories']) && is_array($filters['categories'])) {
+            $query->whereIn('category', $filters['categories']);
         }
 
-        if (!empty($filters['min_price'])) {
-            $query->where('price', '>=', $filters['min_price']);
+        if (!empty($filters['minPrice'])) {
+            $query->where('price', '>=', $filters['minPrice']);
         }
 
-        if (!empty($filters['max_price'])) {
-            $query->where('price', '<=', $filters['max_price']);
+        if (!empty($filters['maxPrice'])) {
+            $query->where('price', '<=', $filters['maxPrice']);
         }
 
         return $query->get();

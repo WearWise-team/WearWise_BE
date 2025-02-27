@@ -21,6 +21,7 @@ class Product extends Model
         'category',
         'quantity',
         'supplier_id',
+        'rating_avg'
     ];
 
     public function supplier()
@@ -61,7 +62,8 @@ class Product extends Model
 
     public function size()
     {
-        return $this->hasMany(Size::class);
+        return $this->belongsToMany(Size::class, 'product_sizes', 'product_id', 'size_id')
+            ->withTimestamps();
     }
     public function color()
     {
@@ -73,4 +75,10 @@ class Product extends Model
         return $this->hasMany(Image::class);
     }
 
+    public function updateRatingAvg()
+    {
+        $avgRating = $this->reviews()->avg('rating');
+
+        $this->update(['rating_avg' => $avgRating]); 
+    }
 }

@@ -31,7 +31,8 @@ use App\Repositories\Implementations\ProductRepository;
 use App\Repositories\Implementations\ReviewRepository;
 use App\Repositories\Implementations\SizeRepository;
 use App\Repositories\Implementations\SupplierRepository;
-use App\Services\Contracts\IAuthService;
+use App\Models\Review;
+use App\Observers\ReviewObserver;
 use App\Services\Contracts\ICartService;
 use App\Services\Contracts\IDiscountService;
 use App\Services\Contracts\IOrderService;
@@ -39,7 +40,6 @@ use App\Services\Contracts\IProductService;
 use App\Services\Contracts\ISupplierService;
 use App\Services\Contracts\IUserService;
 use App\Services\Contracts\IWishlistService;
-use App\Services\Implementations\AuthService;
 use App\Services\Implementations\CartService;
 use App\Services\Implementations\DiscountService;
 use App\Services\Implementations\OrderService;
@@ -87,6 +87,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Review::observe(ReviewObserver::class);
     }
 }

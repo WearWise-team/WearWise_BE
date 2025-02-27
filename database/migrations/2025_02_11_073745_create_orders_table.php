@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'completed', 'canceled'])->default('pending');
             $table->decimal('total_amount', 10, 2);
             $table->string('payment_method');
-            $table->date('order_date'); 
+            $table->date('order_date');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -26,11 +26,12 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id');
-            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('product_color_id');
+            $table->unsignedBigInteger('product_size_id');
             $table->foreign('order_id')->references('id')->on('orders');
-            $table->foreign('product_id')->references('id')->on('products');
             $table->integer('quantity');
-            $table->decimal('price', 10, 2);
+            $table->foreign('product_color_id')->references('id')->on('product_colors')->onDelete('cascade');
+            $table->foreign('product_size_id')->references('id')->on('product_sizes')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });

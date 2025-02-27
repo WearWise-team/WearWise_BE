@@ -10,7 +10,7 @@ class Size extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'sizes';
-    
+
     protected $fillable = [
         'shirt_size',
         'pant_size',
@@ -23,7 +23,7 @@ class Size extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsToMany(Product::class, 'product_sizes', 'product_id', 'size_id')
+            ->withTimestamps();
     }
-    
 }

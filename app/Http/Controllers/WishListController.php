@@ -31,7 +31,16 @@ class WishlistController extends Controller
         ]);
 
         $wishlist = $this->wishlistService->createWishlist($validated);
-        return response()->json($wishlist, 201);
+        
+        return $wishlist? response()->json([
+            'success' => true,
+            'message' => 'Create successfully!',
+            'data' => $wishlist,
+        ], 201): response()->json([
+            'success' => false,
+            'message' => 'add wishlist fail!',
+            'data' => $wishlist,
+        ], 400);
     }
 
     public function show($id)

@@ -18,7 +18,7 @@ class WishlistRepository implements IWishlistRepository
     
     public function getAll()
     {
-        $userId = Auth::id();
+        $userId = auth()->user()->id;
         return $userId
             ? $this->model->with('product')
                           ->where('user_id', $userId)
@@ -29,12 +29,13 @@ class WishlistRepository implements IWishlistRepository
     public function findById(int $id)
     {
         return $this->model->where('user_id', Auth::id())
-                           ->find($id);
+                           ->find($id)->get();
     }
 
     public function create(array $data)
     {
         $userId = Auth::id();
+        return $userId;
         return $userId
             ? $this->model->firstOrCreate([
                   'user_id'    => $userId,

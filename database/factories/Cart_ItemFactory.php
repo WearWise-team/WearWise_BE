@@ -5,6 +5,9 @@ namespace Database\Factories;
 use App\Models\Cart;
 use App\Models\Cart_Item;
 use App\Models\Product;
+use App\Models\Product_Color;
+use App\Models\Product_Size;
+use App\Models\Product_variants;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,13 +24,10 @@ class Cart_ItemFactory extends Factory
     public function definition(): array
     {
         return [
-            'cart_id' => function () {
-                return Cart::factory()->create()->id;
-            },
-            'product_id' => function () {
-                return Product::factory()->create()->id;
-            },
-            'quantity' => $this->faker->numberBetween(1, 10)
+            'cart_id' => Cart::inRandomOrder()->first()->id ?? Cart::factory()->create()->id,
+            'quantity' => $this->faker->numberBetween(1, 10),
+            'product_color_id' => Product_Color::inRandomOrder()->first()->id ?? Product_Color::factory()->create()->id,
+            'product_size_id' => Product_Size::inRandomOrder()->first()->id ?? Product_Size::factory()->create()->id,
         ];
     }
 }
