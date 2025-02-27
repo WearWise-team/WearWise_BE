@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
 
 Route::get('products', [ProductController::class, 'index']);
 Route::post('products', [ProductController::class, 'store']);
@@ -45,3 +46,5 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/cart/update', [CartController::class, 'updateCart']);
     Route::delete('/cart/remove', [CartController::class, 'removeFromCart']);
 });
+
+Route::apiResource('orders', OrderController::class);
