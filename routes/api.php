@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\MoMoController;
 
 Route::get('products', [ProductController::class, 'index']);
 Route::post('products', [ProductController::class, 'store']);
@@ -38,3 +39,5 @@ Route::prefix('colors')->group(function () {
     Route::put('/{id}', [ColorController::class, 'update']); // Cập nhật màu
     Route::delete('/{id}', [ColorController::class, 'destroy']); // Xóa màu
 });
+
+Route::post('/momo/payment', [MoMoController::class, 'createPayment']);
