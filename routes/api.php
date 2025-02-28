@@ -42,9 +42,10 @@ Route::prefix('colors')->group(function () {
 });
 
 Route::middleware('auth:api')->group(function () {
+    Route::get('/myCart/{user_id}', [CartController::class, 'getCartItemsByUserId']);
     Route::post('/cart/add', [CartController::class, 'addToCart']);
     Route::post('/cart/update', [CartController::class, 'updateCart']);
-    Route::delete('/cart/remove', [CartController::class, 'removeFromCart']);
+    Route::delete('/cart/remove', [CartController::class, 'removeCartItem']);
 });
 
 Route::apiResource('orders', OrderController::class);

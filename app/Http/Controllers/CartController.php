@@ -17,6 +17,11 @@ class CartController extends Controller
     {
         $this->cartService = $cartService;
     }
+
+    public function getCartItemsByUserId($user_id) {
+        return $this->cartService->getCartItemsByUserId($user_id);
+    }
+
     public function addToCart(AddToCartRequest $request)
     {
         $validated = $request -> validated();

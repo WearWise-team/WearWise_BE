@@ -39,6 +39,15 @@ class CartService implements ICartService
     {
         return $this->cartRepository->delete($id);
     }
+
+    public function getUserCart($userId) {
+        return $this->cartRepository->getUserCart($userId);
+    }
+
+    public function getCartItemsByUserId($userId) {
+        return $this->cartRepository->getCartItemsByUserId($userId);
+    }
+
     public function addToCart($userId, $productId, $productColorId, $productSizeId, $quantity): JsonResponse
     {
         $cart = $this->cartRepository->getUserCart($userId);
