@@ -10,4 +10,6 @@ interface IProductRepository
     public function update(int $id, array $data);
     public function delete(int $id);
     public function search(string $name);
+    public function GetProductDetails(int $id);
+    public function filterProduct(array $filters);
 }

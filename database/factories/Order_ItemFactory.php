@@ -5,6 +5,8 @@ namespace Database\Factories;
 use App\Models\Order;
 use App\Models\Order_Item;
 use App\Models\Product;
+use App\Models\Product_Color;
+use App\Models\Product_Size;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,14 +23,11 @@ class Order_ItemFactory extends Factory
     public function definition(): array
     {
         return [
-            'order_id' => function () {
-                return Order::factory()->create()->id;
-            },
-            'product_id' => function () {
-                return Product::factory()->create()->id;
-            },
+            'order_id' => Order::inRandomOrder()->first()->id ?? Order::factory()->create()->id,
             'quantity' => $this->faker->numberBetween(1, 10),
-            'price' => $this->faker->randomFloat(2, 10, 1000),
+            'product_color_id' => Product_Color::inRandomOrder()->first()->id ?? Product_Color::factory()->create()->id,
+            'product_size_id' => Product_Size::inRandomOrder()->first()->id ?? Product_Size::factory()->create()->id,
+            'product_id' => Product::all()->random()->id,
         ];
     }
 }

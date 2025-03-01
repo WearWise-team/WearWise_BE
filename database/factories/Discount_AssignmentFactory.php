@@ -28,7 +28,9 @@ class Discount_AssignmentFactory extends Factory
             'product_id' => function() {
                 return Product::factory()->create()->id;
             },
-            
+            'start_date' => $this->faker->dateTimeBetween('-1 month', 'now'),
+            'end_date' => $this->faker->dateTimeBetween('now', '+1 month'),
+            'percentage' => $this->faker->numberBetween(5, 50),
         ];
     }
 }

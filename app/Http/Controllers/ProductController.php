@@ -49,9 +49,10 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = $this->productService->getProductById($id);
+        $product = $this->productService->getProductById((int) $id);
         return response()->json($product);
     }
+
 
     /**
      * Update the specified product in the database.
@@ -81,10 +82,28 @@ class ProductController extends Controller
         return response()->json(null, 204);
     }
 
-    public function search(Request $request)
+    public function searchProductByName(Request $request)
     {
-        $name = $request -> input('name');
-        $products = $this->productService->searchProductByName($name);
-        return response() -> json($products);
+        $request->validate([
+            'name' => 'required|string|min:2'
+        ]);
+
+        $products = $this->productService->searchProductByName($request->input('name'));
+
+        return response()->json($products);
+    }
+
+    public function getProductDetails($id)
+    {
+        $product = $this->productService->getProductDetails($id);
+        return response()->json($product);
+    }
+    public function filterProduct(Request $request)
+    {
+        $filters = $request->all();
+
+        $products = $this->productService->filterProduct($filters);
+
+        return response()->json($products);
     }
 }

@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Size extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $table = 'size';
-    
+    protected $table = 'sizes';
+
     protected $fillable = [
         'shirt_size',
         'pant_size',
@@ -21,9 +21,9 @@ class Size extends Model
         'target_audience'
     ];
 
-    public function product()
+    public function products()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsToMany(Product::class, 'product_sizes', 'size_id', 'product_id')
+            ->withTimestamps();
     }
-    
 }

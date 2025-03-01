@@ -15,11 +15,13 @@ class Product extends Model
 
     protected $fillable = [
         'name',
-        'price',
         'description',
+        'price',
         'image',
         'quantity',
+        'category',
         'supplier_id',
+        'rating_avg'
     ];
 
     public function supplier()
@@ -32,9 +34,9 @@ class Product extends Model
         return $this->hasMany(Wishlist::class);
     }
 
-    public function cart_items()
+    public function cart_item()
     {
-        return $this->hasMany(Cart_Item::class);
+        return $this->belongsTo(Cart_Item::class);
     }
 
     public function reviews()
@@ -42,18 +44,41 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
-    public function order_items()
+    public function orders()
     {
-        return $this->hasMany(Order_Item::class);
+        return $this->belongsToMany(Order::class, 'order_items', 'product_id', 'order_id')
+            ->withPivot('quantity', 'price')
+            ->withTimestamps();
     }
 
-    public function discount_assignment()
+    public function discounts()
     {
-        return $this->hasMany(Discount_Assignment::class);
+        return $this->belongsToMany(Discount::class, 'discount_assignments', 'product_id', 'discount_id')
+            ->withPivot('start_date', 'end_date', 'percentage')
+            ->withTimestamps();
     }
 
-    public function size()
+    public function sizes()
     {
-        return $this->hasMany(Size::class);
+        return $this->belongsToMany(Size::class, 'product_sizes', 'product_id', 'size_id')
+            ->withTimestamps();
+    }
+
+    public function colors()
+    {
+        return $this->belongsToMany(Color::class, 'product_colors', 'product_id', 'color_id')
+            ->withTimestamps();
+    }
+
+    public function image()
+    {
+        return $this->hasMany(Image::class);
+    }
+
+    public function updateRatingAvg()
+    {
+        $avgRating = $this->reviews()->avg('rating');
+
+        $this->update(['rating_avg' => $avgRating]);
     }
 }
