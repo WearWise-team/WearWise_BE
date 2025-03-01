@@ -18,16 +18,18 @@ class CartController extends Controller
         $this->cartService = $cartService;
     }
 
-    public function getCartItemsByUserId($user_id) {
+    public function getCartItemsByUserId($user_id)
+    {
         return $this->cartService->getCartItemsByUserId($user_id);
     }
 
     public function addToCart(AddToCartRequest $request)
     {
-        $validated = $request -> validated();
-        return $this->cartService->addToCart(auth()->id(),
-            $validated['product_id'], 
-            $validated['product_color_id'], 
+        $validated = $request->validated();
+        return $this->cartService->addToCart(
+            auth()->id(),
+            $validated['product_id'],
+            $validated['product_color_id'],
             $validated['product_size_id'],
             $validated['quantity']
         );
@@ -35,7 +37,8 @@ class CartController extends Controller
     public function updateCart(UpdateCartRequest $request)
     {
         $validated = $request->validated();
-        return $this->cartService->updateCartItem(auth()->id(),
+        return $this->cartService->updateCartItem(
+            auth()->id(),
             $validated['cart_item_id'],
             $validated['quantity']
         );
@@ -43,9 +46,9 @@ class CartController extends Controller
     public function removeCartItem(RemoveCartItemRequest $request)
     {
         $validated = $request->validated();
-        return $this->cartService->removeCartItem(auth()->id(),
+        return $this->cartService->removeCartItem(
+            auth()->id(),
             $validated['cart_item_id']
         );
     }
-
 }

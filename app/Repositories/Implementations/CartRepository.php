@@ -53,41 +53,48 @@ class CartRepository implements ICartRepository
         $cartItems = DB::table('cart_items as ci')
             ->join('carts as c', 'ci.cart_id', '=', 'c.id')
             ->join('products as p', 'ci.product_id', '=', 'p.id')
-            ->join('product_colors as pc', 'ci.product_color_id', '=', 'pc.id')
-            ->join('colors as col', 'pc.color_id', '=', 'col.id')
-            ->join('product_sizes as ps', 'ci.product_size_id', '=', 'ps.id')
-            ->join('sizes as s', 'ps.size_id', '=', 's.id')
+            ->join('colors as col', 'ci.product_color_id', '=', 'col.id')
+            ->join('sizes as s', 'ci.product_size_id', '=', 's.id')
+            ->leftJoin('discount_assignments as da', 'p.id', '=', 'da.product_id')
+            ->leftJoin('discounts as d', 'da.discount_id', '=', 'd.id')
             ->where('c.user_id', $userId)
+            ->whereNull('p.deleted_at') // Chỉ lấy sản phẩm chưa bị xóa mềm
             ->select(
                 'ci.id as cart_item_id',
-                'ci.quantity',
                 'p.id as product_id',
                 'p.name as product_name',
                 'p.description',
                 'p.price',
                 'p.image',
+                'ci.quantity',
                 'col.id as color_id',
                 'col.name as color_name',
                 'col.code as color_code',
                 's.id as size_id',
                 's.shirt_size',
                 's.pant_size',
-                's.minimun_weight',
-                's.maximun_weight',
-                's.minimun_height',
-                's.maximun_height',
-                's.target_audience'
+                'd.id as discount_id',
+                'd.code as discount_code',
+                'd.description as discount_description',
+                'da.start_date',
+                'da.end_date',
+                'da.percentage as discount_percentage'
             )
             ->get();
-        // Nhóm các sản phẩm theo product_id
+
         $result = [
             'user_id' => $userId,
-            'cart_items' => []
+            'cart' => []
         ];
+
         foreach ($cartItems as $item) {
-            // Kiểm tra xem sản phẩm đã tồn tại trong danh sách chưa
-            if (!isset($result['cart_items'][$item->product_id])) {
-                $result['cart_items'][$item->product_id] = [
+            // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
+            $existingIndex = array_search($item->cart_item_id, array_column($result['cart'], 'cart_item_id'));
+
+            if ($existingIndex === false) {
+                // Nếu chưa có, thêm sản phẩm mới vào giỏ hàng
+                $cartItem = [
+                    'cart_item_id' => $item->cart_item_id,
                     'product' => [
                         'id' => $item->product_id,
                         'name' => $item->product_name,
@@ -95,46 +102,54 @@ class CartRepository implements ICartRepository
                         'price' => $item->price,
                         'image' => $item->image,
                     ],
-                    'colors' => [],
-                    'sizes' => [],
-                    'quantities' => [],
+                    'size' => [
+                        'id' => $item->size_id,
+                        'shirt_size' => $item->shirt_size,
+                        'pant_size' => $item->pant_size
+                    ],
+                    'color' => [
+                        'id' => $item->color_id,
+                        'name' => $item->color_name,
+                        'code' => $item->color_code
+                    ],
+                    'quantity' => $item->quantity,
+                    'discounts' => []
                 ];
+
+                // Nếu có giảm giá, thêm vào danh sách
+                if ($item->discount_id) {
+                    $cartItem['discounts'][] = [
+                        'id' => $item->discount_id,
+                        'code' => $item->discount_code,
+                        'description' => $item->discount_description,
+                        'percentage' => $item->discount_percentage,
+                        'start_date' => $item->start_date,
+                        'end_date' => $item->end_date
+                    ];
+                }
+
+                $result['cart'][] = $cartItem;
+            } else {
+                // Nếu sản phẩm đã tồn tại, chỉ thêm giảm giá mới nếu chưa có
+                if ($item->discount_id) {
+                    $existingDiscounts = array_column($result['cart'][$existingIndex]['discounts'], 'id');
+                    if (!in_array($item->discount_id, $existingDiscounts)) {
+                        $result['cart'][$existingIndex]['discounts'][] = [
+                            'id' => $item->discount_id,
+                            'code' => $item->discount_code,
+                            'description' => $item->discount_description,
+                            'percentage' => $item->discount_percentage,
+                            'start_date' => $item->start_date,
+                            'end_date' => $item->end_date
+                        ];
+                    }
+                }
             }
-            // Thêm màu sắc vào danh sách (nếu chưa có)
-            $existingColors = array_column($result['cart_items'][$item->product_id]['colors'], 'id');
-            if (!in_array($item->color_id, $existingColors)) {
-                $result['cart_items'][$item->product_id]['colors'][] = [
-                    'id' => $item->color_id,
-                    'name' => $item->color_name,
-                    'code' => $item->color_code
-                ];
-            }
-            // Thêm size vào danh sách (nếu chưa có)
-            $existingSizes = array_column($result['cart_items'][$item->product_id]['sizes'], 'id');
-            if (!in_array($item->size_id, $existingSizes)) {
-                $result['cart_items'][$item->product_id]['sizes'][] = [
-                    'id' => $item->size_id,
-                    'shirt_size' => $item->shirt_size,
-                    'pant_size' => $item->pant_size,
-                    'minimun_weight' => $item->minimun_weight,
-                    'maximun_weight' => $item->maximun_weight,
-                    'minimun_height' => $item->minimun_height,
-                    'maximun_height' => $item->maximun_height,
-                    'target_audience' => $item->target_audience
-                ];
-            }
-            // Gán số lượng theo từng biến thể màu + size
-            $result['cart_items'][$item->product_id]['quantities'][] = [
-                'color' => $item->color_name,
-                'size' => $item->shirt_size,
-                'quantity' => $item->quantity
-            ];
         }
-        // Chuyển `cart_items` từ mảng có key `product_id` thành danh sách
-        $result['cart_items'] = array_values($result['cart_items']);
 
         return $result;
     }
+
 
 
     public function createCartForUser($userId)
@@ -163,10 +178,24 @@ class CartRepository implements ICartRepository
         ]);
     }
 
+
     public function findCartItemById($cartItemId)
     {
-        return Cart_Item::find($cartItemId);
+        return Cart_Item::with('cart') 
+            ->where('id', $cartItemId)
+            ->first();
     }
+
+    public function findCartItemByUserId($userId, $cartItemId)
+    {
+        return Cart_Item::whereHas('cart', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })
+            ->where('id', $cartItemId)
+            ->first();
+    }
+
+
 
     public function updateCartItemQuantity($cartItem, $quantity)
     {
@@ -180,14 +209,8 @@ class CartRepository implements ICartRepository
 
     public function removeCartItem($cartItem)
     {
-        $cartItem->delete();
+        if ($cartItem) {
+            $cartItem->forceDelete();
+        }
     }
-
-    // public function getProductStock($productId, $productColorId, $productSizeId)
-    // {
-    //     return Product::where('id', $productId)
-    //         ->where('product_color_id', $productColorId)
-    //         ->where('product_size_id', $productSizeId)
-    //         ->value('quantity');
-    // }
 }

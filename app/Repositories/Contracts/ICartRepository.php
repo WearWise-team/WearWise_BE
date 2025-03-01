@@ -11,6 +11,7 @@ interface ICartRepository
     public function delete(int $id);
     public function getUserCart($userId);
     public function getCartItemsByUserId($userId);
+    public function findCartItemByUserId($userId, $cartItemId); // new change
     public function createCartForUser($userId);
     public function findCartItem($cartId, $productId, $productColorId, $productSizeId);
     public function findCartItemById($cartItemId);
