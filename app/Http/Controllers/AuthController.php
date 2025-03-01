@@ -55,8 +55,7 @@ class AuthController extends Controller
         }
 
         try {
-            if (!$token = JWTAuth::attempt($request->only('email', 'password')))
-            {
+            if (!$token = JWTAuth::attempt($request->only('email', 'password'))) {
                 return response()->json([
                     'response' => 'error',
                     'message' => 'Invalid email or password'
@@ -75,7 +74,11 @@ class AuthController extends Controller
                         'name' => $user->name,
                         'avatar' => $user->avatar,
                         'phone' => $user->phone,
-                        'role' => $user->role
+                        'role' => $user->role,
+                        'address' => $user->address,
+                        'gender' => $user->gender,
+                        'dob' => $user->dob,
+                        'created_at' => $user->created_at,
                     ],
                 ],
             ]);

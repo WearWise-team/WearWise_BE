@@ -30,7 +30,7 @@ class CartService implements ICartService
         return $this->cartRepository->create($data);
     }
 
-    public function updateCart(array $data,int $id)
+    public function updateCart(array $data, int $id)
     {
         return $this->cartRepository->update($id, $data);
     }
@@ -39,17 +39,23 @@ class CartService implements ICartService
     {
         return $this->cartRepository->delete($id);
     }
+
+    public function getUserCart($userId)
+    {
+        return $this->cartRepository->getUserCart($userId);
+    }
+
+    public function getCartItemsByUserId($userId)
+    {
+        return $this->cartRepository->getCartItemsByUserId($userId);
+    }
+
     public function addToCart($userId, $productId, $productColorId, $productSizeId, $quantity): JsonResponse
     {
         $cart = $this->cartRepository->getUserCart($userId);
         if (!$cart) {
             $cart = $this->cartRepository->createCartForUser($userId);
         }
-
-        // $availableStock = $this->cartRepository->getProductStock($productId, $productColorId, $productSizeId);
-        // if ($quantity > $availableStock) {
-        //     return response()->json(['message' => 'The quantity exceeds available stock. Please select a lower quantity.'], 400);
-        // }
 
         $cartItem = $this->cartRepository->findCartItem($cart->id, $productId, $productColorId, $productSizeId);
         if ($cartItem) {
@@ -74,12 +80,14 @@ class CartService implements ICartService
 
     public function removeCartItem($userId, $cartItemId): JsonResponse
     {
-        $cartItem = $this->cartRepository->findCartItemById($cartItemId);
-        if (!$cartItem || $cartItem->cart->user_id !== $userId) {
+        $cartItem = $this->cartRepository->findCartItemByUserId($userId, $cartItemId);
+
+        if (!$cartItem) {
             return response()->json(['message' => 'Product not found in cart.'], 404);
         }
 
         $this->cartRepository->removeCartItem($cartItem);
+
         return response()->json(['message' => 'The product has been removed from your cart.'], 200);
     }
 }

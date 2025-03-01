@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Cart_Item;
 use App\Models\Product;
 use App\Repositories\Contracts\ICartRepository;
+use Illuminate\Support\Facades\DB;
 
 class CartRepository implements ICartRepository
 {
@@ -47,6 +48,110 @@ class CartRepository implements ICartRepository
         return Cart::where('user_id', $userId)->first();
     }
 
+    public function getCartItemsByUserId($userId)
+    {
+        $cartItems = DB::table('cart_items as ci')
+            ->join('carts as c', 'ci.cart_id', '=', 'c.id')
+            ->join('products as p', 'ci.product_id', '=', 'p.id')
+            ->join('colors as col', 'ci.product_color_id', '=', 'col.id')
+            ->join('sizes as s', 'ci.product_size_id', '=', 's.id')
+            ->leftJoin('discount_assignments as da', 'p.id', '=', 'da.product_id')
+            ->leftJoin('discounts as d', 'da.discount_id', '=', 'd.id')
+            ->where('c.user_id', $userId)
+            ->whereNull('p.deleted_at') // Chỉ lấy sản phẩm chưa bị xóa mềm
+            ->select(
+                'ci.id as cart_item_id',
+                'p.id as product_id',
+                'p.name as product_name',
+                'p.description',
+                'p.price',
+                'p.image',
+                'ci.quantity',
+                'col.id as color_id',
+                'col.name as color_name',
+                'col.code as color_code',
+                's.id as size_id',
+                's.shirt_size',
+                's.pant_size',
+                'd.id as discount_id',
+                'd.code as discount_code',
+                'd.description as discount_description',
+                'da.start_date',
+                'da.end_date',
+                'da.percentage as discount_percentage'
+            )
+            ->get();
+
+        $result = [
+            'user_id' => $userId,
+            'cart' => []
+        ];
+
+        foreach ($cartItems as $item) {
+            // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
+            $existingIndex = array_search($item->cart_item_id, array_column($result['cart'], 'cart_item_id'));
+
+            if ($existingIndex === false) {
+                // Nếu chưa có, thêm sản phẩm mới vào giỏ hàng
+                $cartItem = [
+                    'cart_item_id' => $item->cart_item_id,
+                    'product' => [
+                        'id' => $item->product_id,
+                        'name' => $item->product_name,
+                        'description' => $item->description,
+                        'price' => $item->price,
+                        'image' => $item->image,
+                    ],
+                    'size' => [
+                        'id' => $item->size_id,
+                        'shirt_size' => $item->shirt_size,
+                        'pant_size' => $item->pant_size
+                    ],
+                    'color' => [
+                        'id' => $item->color_id,
+                        'name' => $item->color_name,
+                        'code' => $item->color_code
+                    ],
+                    'quantity' => $item->quantity,
+                    'discounts' => []
+                ];
+
+                // Nếu có giảm giá, thêm vào danh sách
+                if ($item->discount_id) {
+                    $cartItem['discounts'][] = [
+                        'id' => $item->discount_id,
+                        'code' => $item->discount_code,
+                        'description' => $item->discount_description,
+                        'percentage' => $item->discount_percentage,
+                        'start_date' => $item->start_date,
+                        'end_date' => $item->end_date
+                    ];
+                }
+
+                $result['cart'][] = $cartItem;
+            } else {
+                // Nếu sản phẩm đã tồn tại, chỉ thêm giảm giá mới nếu chưa có
+                if ($item->discount_id) {
+                    $existingDiscounts = array_column($result['cart'][$existingIndex]['discounts'], 'id');
+                    if (!in_array($item->discount_id, $existingDiscounts)) {
+                        $result['cart'][$existingIndex]['discounts'][] = [
+                            'id' => $item->discount_id,
+                            'code' => $item->discount_code,
+                            'description' => $item->discount_description,
+                            'percentage' => $item->discount_percentage,
+                            'start_date' => $item->start_date,
+                            'end_date' => $item->end_date
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+
+
     public function createCartForUser($userId)
     {
         return Cart::create(['user_id' => $userId]);
@@ -73,9 +178,21 @@ class CartRepository implements ICartRepository
         ]);
     }
 
+
     public function findCartItemById($cartItemId)
     {
-        return Cart_Item::find($cartItemId);
+        return Cart_Item::with('cart')
+            ->where('id', $cartItemId)
+            ->first();
+    }
+
+    public function findCartItemByUserId($userId, $cartItemId)
+    {
+        return Cart_Item::whereHas('cart', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })
+            ->where('id', $cartItemId)
+            ->first();
     }
 
     public function updateCartItemQuantity($cartItem, $quantity)
@@ -90,14 +207,21 @@ class CartRepository implements ICartRepository
 
     public function removeCartItem($cartItem)
     {
-        $cartItem->delete();
+        if ($cartItem) {
+            $cartItem->forceDelete();
+        }
     }
 
-    // public function getProductStock($productId, $productColorId, $productSizeId)
-    // {
-    //     return Product::where('id', $productId)
-    //         ->where('product_color_id', $productColorId)
-    //         ->where('product_size_id', $productSizeId)
-    //         ->value('quantity');
-    // }
+    public function clearUserCart(int $userId)
+    {
+        $cartItems = Cart_Item::whereHas('cart', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->get();
+
+        foreach ($cartItems as $item) {
+            $item->forceDelete();
+        }
+
+        return $cartItems;
+    }
 }

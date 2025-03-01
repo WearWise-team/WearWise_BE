@@ -2,11 +2,11 @@
 
 namespace App\Repositories\Contracts;
 
+use App\Models\Order;
+
 interface IOrderRepository
 {
-    public function getAll();
-    public function findById(int $id);
-    public function create(array $data);
-    public function update(int $id, array $data);
-    public function delete(int $id);
+    public function getUserOrders($userId);
+    public function createOrder(array $data, $userId);
+    public function updateOrderStatus(int $userId, int $orderId, string $status);
 }
