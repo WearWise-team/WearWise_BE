@@ -181,7 +181,7 @@ class CartRepository implements ICartRepository
 
     public function findCartItemById($cartItemId)
     {
-        return Cart_Item::with('cart') 
+        return Cart_Item::with('cart')
             ->where('id', $cartItemId)
             ->first();
     }
@@ -194,8 +194,6 @@ class CartRepository implements ICartRepository
             ->where('id', $cartItemId)
             ->first();
     }
-
-
 
     public function updateCartItemQuantity($cartItem, $quantity)
     {
@@ -212,5 +210,18 @@ class CartRepository implements ICartRepository
         if ($cartItem) {
             $cartItem->forceDelete();
         }
+    }
+
+    public function clearUserCart(int $userId)
+    {
+        $cartItems = Cart_Item::whereHas('cart', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->get();
+
+        foreach ($cartItems as $item) {
+            $item->forceDelete();
+        }
+
+        return $cartItems;
     }
 }

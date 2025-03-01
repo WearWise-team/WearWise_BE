@@ -15,58 +15,45 @@ class OrderController extends Controller
         $this->orderService = $orderService;
     }
 
-    public function index(): JsonResponse
+    public function index($userId)
     {
-        $orders = $this->orderService->getAllOrders();
-        return response()->json($orders);
+        return response()->json($this->orderService->getUserOrders($userId));
     }
 
-    public function show(int $id): JsonResponse
-    {
-        $order = $this->orderService->getOrderById($id);
-        if (!$order) {
-            return response()->json(['message' => 'Order not found'], 404);
-        }
-        return response()->json($order);
-    }
-
-    public function store(Request $request): JsonResponse
+    public function store(Request $request, $userId): JsonResponse
     {
         $validatedData = $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'total_price' => 'required|numeric|min:0',
+            'total_amount' => 'required|numeric|min:0',
             'status' => 'required|string|in:pending,completed,cancelled',
+            'payment_method' => 'required|string|in:cod,momo,vnpay',
         ]);
 
-        $order = $this->orderService->createOrder($validatedData);
+        // Truyền `total_amount` vào service
+        $order = $this->orderService->createOrderFromCart($userId, $validatedData['total_amount'], $validatedData['status'], $validatedData['payment_method']);
+
+        if (!$order) {
+            return response()->json(['message' => 'Failed to create order'], 500);
+        }
+
         return response()->json($order, 201);
     }
 
-    public function update(Request $request, int $id): JsonResponse
+    public function updateOrderStatus(Request $request): JsonResponse
     {
         $validatedData = $request->validate([
-            'customer_name' => 'sometimes|string|max:255',
-            'total_price' => 'sometimes|numeric|min:0',
-            'status' => 'sometimes|string|in:pending,completed,cancelled',
+            'userId' => 'required|integer',
+            'orderId' => 'required|integer',
+            'status' => 'required|string|in:pending,completed,cancelled'
         ]);
 
-        $order = $this->orderService->updateOrder($validatedData, $id);
+        $updated = $this->orderService->updateOrderStatus($validatedData['userId'], $validatedData['orderId'], $validatedData['status']);
 
-        if (!$order) {
-            return response()->json(['message' => 'Order not found or update failed'], 404);
+        if (!$updated) {
+            return response()->json(['message' => 'Cập nhật trạng thái thất bại hoặc đơn hàng không tồn tại'], 400);
         }
 
-        return response()->json(['message' => 'Order updated successfully']);
-    }
-
-    public function destroy(int $id): JsonResponse
-    {
-        $deleted = $this->orderService->deleteOrder($id);
-
-        if (!$deleted) {
-            return response()->json(['message' => 'Order not found or delete failed'], 404);
-        }
-
-        return response()->json(['message' => 'Order deleted successfully']);
+        return response()->json(['message' => 'Cập nhật trạng thái đơn hàng thành công'], 200);
     }
 }
+
+?>

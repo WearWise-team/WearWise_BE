@@ -50,4 +50,8 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/cart/remove', [CartController::class, 'removeCartItem']);
 });
 
-Route::apiResource('orders', OrderController::class);
+Route::middleware('auth:api')->group(function () {
+    Route::get('/orders/{userId}', [OrderController::class, 'index']);
+    Route::post('/orders/{userId}', [OrderController::class, 'store']);
+    Route::put('/orders', [OrderController::class, 'updateOrderStatus']);
+});

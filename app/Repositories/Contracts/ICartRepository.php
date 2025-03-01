@@ -19,6 +19,7 @@ interface ICartRepository
     public function updateCartItemQuantityExact($cartItem, $quantity);
     public function addNewCartItem($cartId, $productId, $productColorId, $productSizeId, $quantity);
     public function removeCartItem($cartItem);
+    public function clearUserCart(int $userId); // new change
     // public function getProductStock($productId, $productColorId, $productSizeId);
     
 }
