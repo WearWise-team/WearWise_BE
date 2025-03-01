@@ -18,7 +18,6 @@ Route::post('/products/search', [ProductController::class, 'searchProductByName'
 Route::get('/products/more/{id}', [ProductController::class, 'getProductDetails']);
 Route::post('/products/filter', [ProductController::class, 'filterProduct']);
 
-
 Route::apiResource('users', controller: UserController::class);
 
 Route::group([
