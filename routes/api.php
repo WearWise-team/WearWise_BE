@@ -8,6 +8,7 @@ use App\Http\Controllers\ColorController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MoMoController;
+use App\Http\Controllers\VirtualTryOnController;
 
 Route::get('products', [ProductController::class, 'index']);
 Route::post('products', [ProductController::class, 'store']);
@@ -55,3 +56,5 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/orders/{userId}', [OrderController::class, 'store']);
     Route::put('/orders', [OrderController::class, 'updateOrderStatus']);
 });
+
+Route::post('/virtual-tryon', [VirtualTryOnController::class, 'tryOnClothes']);
