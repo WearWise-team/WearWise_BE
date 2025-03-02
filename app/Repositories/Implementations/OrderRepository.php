@@ -26,6 +26,7 @@ class OrderRepository implements IOrderRepository
                 'oi.quantity',
                 'p.id as product_id',
                 'p.name as product_name',
+                'p.image',
                 'p.price',
                 'col.id as color_id',
                 'col.name as color_name',

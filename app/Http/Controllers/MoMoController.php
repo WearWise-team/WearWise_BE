@@ -11,16 +11,16 @@ class MoMoController extends Controller
     {
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
 
-        $partnerCode = env('MOMO_PARTNER_CODE');
-        $accessKey = env('MOMO_ACCESS_KEY');
-        $secretKey = env('MOMO_SECRET_KEY');
+        $partnerCode = 'MOMOBKUN20180529';
+        $accessKey = 'klm05TvNBzhg7h7j';
+        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
 
-        $orderId = time() . "";
+        $orderId = $request->orderId . ":" . time();
         $requestId = time() . "";
         $amount = $request->amount;
-        $orderInfo = "Thanh toán qua MoMo";
-        $redirectUrl = env('MOMO_REDIRECT_URL');
-        $ipnUrl = env('MOMO_IPN_URL');
+        $orderInfo = "MoMo";
+        $redirectUrl = 'http://localhost:3000/profile';
+        $ipnUrl = 'http://localhost:8000/api/momo/ipn';
         $requestType = "captureWallet";
         $extraData = "";
 
@@ -31,7 +31,7 @@ class MoMoController extends Controller
         // Chuẩn bị dữ liệu gửi đến MoMo
         $data = [
             'partnerCode' => $partnerCode,
-            'partnerName' => "Test",
+            'partnerName' => "WearWise",
             'storeId' => "MomoTestStore",
             'requestId' => $requestId,
             'amount' => $amount,
