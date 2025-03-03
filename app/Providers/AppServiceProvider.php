@@ -34,7 +34,9 @@ use App\Repositories\Implementations\SupplierRepository;
 use App\Models\Review;
 use App\Observers\ReviewObserver;
 use App\Repositories\Contracts\IColorRepository;
+use App\Repositories\Contracts\IVirtualTryOnRepository;
 use App\Repositories\Implementations\ColorRepository;
+use App\Repositories\Implementations\VirtualTryOnRepository;
 use App\Services\Contracts\ICartService;
 use App\Services\Contracts\IColorService;
 use App\Services\Contracts\IDiscountService;
@@ -42,6 +44,7 @@ use App\Services\Contracts\IOrderService;
 use App\Services\Contracts\IProductService;
 use App\Services\Contracts\ISupplierService;
 use App\Services\Contracts\IUserService;
+use App\Services\Contracts\IVirtualTryOnService;
 use App\Services\Contracts\IWishlistService;
 use App\Services\Implementations\CartService;
 use App\Services\Implementations\ColorService;
@@ -52,6 +55,7 @@ use App\Services\Implementations\ReviewService;
 use App\Services\Implementations\SizeService;
 use App\Services\Implementations\SupplierService;
 use App\Services\Implementations\UserService;
+use App\Services\Implementations\VirtualTryOnService;
 use App\Services\Implementations\WishlistService;
 
 class AppServiceProvider extends ServiceProvider
@@ -75,6 +79,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ISizeRepository::class, SizeRepository::class);
         
         $this->app->bind(IColorRepository::class, ColorRepository::class);
+        $this->app->bind(IVirtualTryOnRepository::class, VirtualTryOnRepository::class);
 
         $this->app->bind(IUserService::class, UserService::class);
         $this->app->bind(ISupplierService::class, SupplierService::class);
@@ -87,6 +92,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ISizeService::class, SizeService::class);
 
         $this->app->bind(IColorService::class, ColorService::class);
+        $this->app->bind(IVirtualTryOnService::class, VirtualTryOnService::class);
     }
 
     /**

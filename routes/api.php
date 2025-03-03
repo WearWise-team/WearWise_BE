@@ -6,6 +6,9 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\MoMoController;
+use App\Http\Controllers\VirtualTryOnController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\WishlistController;
@@ -18,23 +21,6 @@ Route::delete('products/{id}', [ProductController::class, 'destroy']);
 Route::post('/products/search', [ProductController::class, 'searchProductByName']);
 Route::get('/products/more/{id}', [ProductController::class, 'getProductDetails']);
 Route::post('/products/filter', [ProductController::class, 'filterProduct']);
-
-Route::prefix('reviews')->group(function () {
-    Route::get('/', [ReviewController::class, 'index']);
-    Route::post('/', [ReviewController::class, 'store']);
-    Route::get('/{id}', [ReviewController::class, 'show']);
-    Route::put('/{id}', [ReviewController::class, 'update']);
-    Route::delete('/{id}', [ReviewController::class, 'destroy']);
-});
-
-Route::prefix('suppliers')->group(function () {
-    Route::get('/', [SupplierController::class, 'index']);
-    Route::post('/', [SupplierController::class, 'store']);
-    Route::get('/{id}', [SupplierController::class, 'show']);
-    Route::put('/{id}', [SupplierController::class, 'update']);
-    Route::delete('/{id}', [SupplierController::class, 'destroy']);
-});
-
 
 Route::apiResource('users', controller: UserController::class);
 
@@ -59,10 +45,18 @@ Route::prefix('colors')->group(function () {
     Route::delete('/{id}', [ColorController::class, 'destroy']); // Xóa màu
 });
 
+Route::post('/momo/payment', [MoMoController::class, 'createPayment']);
 Route::middleware('auth:api')->group(function () {
+    Route::get('/myCart/{user_id}', [CartController::class, 'getCartItemsByUserId']);
     Route::post('/cart/add', [CartController::class, 'addToCart']);
     Route::post('/cart/update', [CartController::class, 'updateCart']);
-    Route::delete('/cart/remove', [CartController::class, 'removeFromCart']);
+    Route::delete('/cart/remove', [CartController::class, 'removeCartItem']);
+});
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('/orders/{userId}', [OrderController::class, 'index']);
+    Route::post('/orders/{userId}', [OrderController::class, 'store']);
+    Route::put('/orders', [OrderController::class, 'updateOrderStatus']);
 
     Route::prefix('reviews')->group(function () {
         Route::post('/', [ReviewController::class, 'store']);
@@ -74,3 +68,5 @@ Route::middleware('auth:api')->group(function () {
         Route::delete('/{productId}', [WishlistController::class, 'destroyWishlist']);
     });
 });
+
+Route::post('/virtual-tryon', [VirtualTryOnController::class, 'tryOnClothes']);
