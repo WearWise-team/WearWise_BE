@@ -12,6 +12,7 @@ class Review extends Model
     use HasFactory, SoftDeletes;
     protected $fillable = [
         'user_id',
+        'order_item_id',
         'product_id',
         'rating',
         'content'

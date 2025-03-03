@@ -1,9 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ColorController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SupplierController;
@@ -34,13 +35,6 @@ Route::prefix('suppliers')->group(function () {
     Route::delete('/{id}', [SupplierController::class, 'destroy']);
 });
 
-Route::prefix('wishlists')->group(function () {
-    Route::get('/', [WishlistController::class, 'index']);
-    Route::post('/', [WishlistController::class, 'store']);
-    Route::get('/{id}', [WishlistController::class, 'show']);
-    Route::put('/{id}', [WishlistController::class, 'update']);
-    Route::delete('/{id}', [WishlistController::class, 'destroy']);
-});
 
 Route::apiResource('users', controller: UserController::class);
 
@@ -51,9 +45,32 @@ Route::group([
 
 ], function ($router) {
     Route::post('signup', [AuthController::class, 'signup']);
-    Route::match(['get', 'post'], 'login', [AuthController::class, 'login']);
+    Route::match(['get', 'post'], 'login', [AuthController::class, 'login'])->name('login');
     Route::post('logout', [AuthController::class, 'logout']);
     // Route::post('refresh', 'AuthController@refresh');
     Route::get('profile', [AuthController::class, 'me']);
 });
 
+Route::prefix('colors')->group(function () {
+    Route::get('/', [ColorController::class, 'index']); // Lấy danh sách màu
+    Route::get('/{id}', [ColorController::class, 'show']); // Lấy chi tiết màu theo ID
+    Route::post('/', [ColorController::class, 'store']); // Tạo mới một màu
+    Route::put('/{id}', [ColorController::class, 'update']); // Cập nhật màu
+    Route::delete('/{id}', [ColorController::class, 'destroy']); // Xóa màu
+});
+
+Route::middleware('auth:api')->group(function () {
+    Route::post('/cart/add', [CartController::class, 'addToCart']);
+    Route::post('/cart/update', [CartController::class, 'updateCart']);
+    Route::delete('/cart/remove', [CartController::class, 'removeFromCart']);
+
+    Route::prefix('reviews')->group(function () {
+        Route::post('/', [ReviewController::class, 'store']);
+    });
+    
+    Route::prefix('wishlists')->group(function () {
+        Route::get('/', [WishlistController::class, 'index']);
+        Route::post('/', [WishlistController::class, 'createWishlist']);
+        Route::delete('/{productId}', [WishlistController::class, 'destroyWishlist']);
+    });
+});

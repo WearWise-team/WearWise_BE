@@ -16,41 +16,31 @@ class WishlistRepository implements IWishlistRepository
     }
 
     
-    public function getAll()
+    public function getAll(int $userId)
     {
-        $userId = auth()->user()->id;
-        return $userId
-            ? $this->model->with('product')
-                          ->where('user_id', $userId)
-                          ->get()
-            : collect(); 
+        return Wishlist::where('user_id', $userId)->get();
     }
 
-    public function findById(int $id)
+    public function create(int $userId, array $data)
     {
-        return $this->model->where('user_id', Auth::id())
-                           ->find($id)->get();
-    }
-
-    public function create(array $data)
-    {
-        $userId = Auth::id();
-        return $userId;
-        return $userId
-            ? $this->model->firstOrCreate([
+        $existingWishlist = Wishlist::where('user_id', $userId)->where('product_id', $data['product_id'])->first();
+        if ($existingWishlist) {
+            $existingWishlist->delete();
+            return false;
+        }
+        return 
+             Wishlist::firstOrCreate([
                   'user_id'    => $userId,
                   'product_id' => $data['product_id'],
-              ])
-            : null;
+             ]);
     }
 
-    public function delete(int $id)
+    public function delete(int $userId,int $productId)
     {
-        $userId = Auth::id();
-        return $userId
-            ? $this->model->where('user_id', $userId)
-                          ->where('id', $id)
-                          ->delete()
-            : false;
+        $existingWishlist = Wishlist::where('user_id',$userId)->where('product_id', $productId)->first();
+        if ($existingWishlist) {
+            return $existingWishlist->delete();
+        }
+        return false;
     }
 }

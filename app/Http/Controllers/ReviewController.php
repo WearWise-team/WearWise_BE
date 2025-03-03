@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReviewRequest;
 use App\Services\Contracts\IReviewService;
 use Illuminate\Http\Request;
 
@@ -14,45 +15,12 @@ class ReviewController extends Controller
         $this->reviewService = $reviewService;
     }
 
-    public function index()
+    public function store(ReviewRequest $request)
     {
-        $reviews = $this->reviewService->getAllReviews();
-        return response()->json($reviews);
-    }
-
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'user_id' => 'required|integer',
-            'product_id' => 'required|integer',
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string',
-        ]);
-
+        $validated = $request -> validated();
+        $validated['user_id'] = auth()->id();
         $review = $this->reviewService->createReview($validated);
         return response()->json($review, 201);
     }
 
-    public function show($productId)
-    {
-        $review = $this->reviewService->getReviewById((int) $productId);
-        return response()->json($review);
-    }
-
-    public function update($id, Request $request)
-    {
-        $validated = $request->validate([
-            'rating' => 'integer|min:1|max:5',
-            'comment' => 'nullable|string',
-        ]);
-
-        $review = $this->reviewService->updateReview($validated, (int) $id);
-        return response()->json($review);
-    }
-
-    public function destroy($id)
-    {
-        $this->reviewService->deleteReview((int) $id);
-        return response()->json(null, 204);
-    }
 }

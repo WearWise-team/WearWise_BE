@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\WishlistRequest;
 use App\Services\Contracts\IWishlistService;
 use Illuminate\Http\Request;
 
@@ -16,42 +17,25 @@ class WishlistController extends Controller
 
     public function index()
     {
-        $wishlists = $this->wishlistService->getAllWishlists();
-        return response()->json([
-            'success' => true,
-            'message' => 'Show all wishlists successfully!',
-            'data' => $wishlists,
-        ]);
+        $userId = auth()->id();
+        return response()->json($this->wishlistService->getAllWishlists($userId), 200);
     }
 
-    public function store(Request $request)
+    public function createWishlist(WishlistRequest $request)
     {
-        $validated = $request->validate([
-            'product_id' => 'required|integer',
-        ]);
-
-        $wishlist = $this->wishlistService->createWishlist($validated);
+        $userId = auth()->id();
+        $validated = $request -> validated();
+        $result = $this->wishlistService->createWishlist($userId,$validated);
+        if ($result === false) {
+            return response()->json(['message' => 'Product removed from wishlist'], 200);
+        }
         
-        return $wishlist? response()->json([
-            'success' => true,
-            'message' => 'Create successfully!',
-            'data' => $wishlist,
-        ], 201): response()->json([
-            'success' => false,
-            'message' => 'add wishlist fail!',
-            'data' => $wishlist,
-        ], 400);
+        return response()->json($result, 201);
     }
 
-    public function show($id)
+    public function destroyWishlist($producId)
     {
-        $wishlist = $this->wishlistService->getWishlistById((int) $id);
-        return response()->json($wishlist);
-    }
-
-    public function destroy($id)
-    {
-        $this->wishlistService->deleteWishlist((int) $id);
-        return response()->json(null, 204);
+        $userId = auth()->id();
+        return response()->json(['success' => $this->wishlistService->deleteWishlist($userId,$producId)], 200);
     }
 }
