@@ -15,15 +15,17 @@ class OrderRepository implements IOrderRepository
             ->where('user_id', $userId)
             ->get();
 
-        $orderItems = DB::table('order_items as oi')
-            ->join('products as p', 'oi.product_id', '=', 'p.id')
-            ->join('colors as col', 'oi.product_color_id', '=', 'col.id')
-            ->join('sizes as s', 'oi.product_size_id', '=', 's.id')
-            ->whereIn('oi.order_id', $orders->pluck('id'))
+            $orderItems = DB::table('orders as o')
+            ->leftJoin('order_items as oi', 'o.id', '=', 'oi.order_id')
+            ->leftJoin('products as p', 'oi.product_id', '=', 'p.id')
+            ->leftJoin('colors as col', 'oi.product_color_id', '=', 'col.id')
+            ->leftJoin('sizes as s', 'oi.product_size_id', '=', 's.id')
+            ->where('o.user_id', $userId)
             ->select(
-                'oi.order_id',
+                'o.id as order_id',
                 'oi.id as order_item_id',
                 'oi.quantity',
+                'oi.status',
                 'p.id as product_id',
                 'p.name as product_name',
                 'p.image',
@@ -35,7 +37,7 @@ class OrderRepository implements IOrderRepository
                 's.pant_size'
             )
             ->get();
-
+        
         $groupedOrderItems = $orderItems->groupBy('order_id');
 
         $orders->transform(function ($order) use ($groupedOrderItems) {
