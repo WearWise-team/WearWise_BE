@@ -29,7 +29,7 @@ class VirtualTryOnRepository implements IVirtualTryOnRepository
         if (!file_exists($personImagePath) || !file_exists($clothImagePath)) {
             return response()->json(['error' => 'One or both files are missing'], 400);
         }
-
+        
         // Chuẩn bị dữ liệu cho cURL
         $postFields = [
             'personImage' => new \CURLFile($personImagePath, $personImage->getMimeType(), $personImage->getClientOriginalName()),
@@ -51,7 +51,6 @@ class VirtualTryOnRepository implements IVirtualTryOnRepository
             CURLOPT_HTTPHEADER => [
                 "x-rapidapi-host: virtual-try-on2.p.rapidapi.com",
                 "x-rapidapi-key: $this->apiKey",
-                // "Content-Type: multipart/form-data",
             ],
         ]);
 
