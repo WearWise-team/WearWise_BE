@@ -20,6 +20,7 @@ class OrderRepository implements IOrderRepository
             ->leftJoin('products as p', 'oi.product_id', '=', 'p.id')
             ->leftJoin('colors as col', 'oi.product_color_id', '=', 'col.id')
             ->leftJoin('sizes as s', 'oi.product_size_id', '=', 's.id')
+            ->leftJoin('reviews as r', 'oi.id', '=', 'r.order_item_id') // Kiểm tra review
             ->where('o.user_id', $userId)
             ->select(
                 'o.id as order_id',
@@ -34,7 +35,8 @@ class OrderRepository implements IOrderRepository
                 'col.name as color_name',
                 's.id as size_id',
                 's.shirt_size',
-                's.pant_size'
+                's.pant_size',
+                DB::raw('CASE WHEN r.id IS NOT NULL THEN true ELSE false END as reviewed') // Kiểm tra review
             )
             ->get();
         

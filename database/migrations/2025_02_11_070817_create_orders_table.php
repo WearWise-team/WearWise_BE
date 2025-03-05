@@ -29,6 +29,7 @@ return new class extends Migration
             $table->integer('product_color_id');
             $table->integer('product_size_id');
             $table->integer('product_id');
+            $table->decimal("total_price",10,3);
             $table->enum('status', ['pending', 'completed', 'canceled'])->default('pending');
             $table->foreign('order_id')->references('id')->on('orders');
             $table->softDeletes();
