@@ -3,8 +3,9 @@
 namespace App\Services\Implementations;
 
 use App\Repositories\Contracts\IReviewRepository;
+use App\Services\Contracts\IReviewService;
 
-class ReviewService
+class ReviewService implements IReviewService
 {
     protected $reviewRepository;
 
@@ -13,28 +14,9 @@ class ReviewService
         $this->reviewRepository = $reviewRepository;
     }
 
-    public function getAllReviews()
-    {
-        return $this->reviewRepository->getAll();
-    }
-
-    public function getReviewById(int $id)
-    {
-        return $this->reviewRepository->findById($id);
-    }
-
     public function createReview(array $data)
     {
         return $this->reviewRepository->create($data);
     }
 
-    public function updateReview(int $id, array $data)
-    {
-        return $this->reviewRepository->update($id, $data);
-    }
-
-    public function deleteReview(int $id)
-    {
-        return $this->reviewRepository->delete($id);
-    }
 }

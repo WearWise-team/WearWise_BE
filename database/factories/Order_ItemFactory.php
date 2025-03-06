@@ -14,20 +14,21 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class Order_ItemFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     protected $model = Order_Item::class;
+
     public function definition(): array
     {
+        $product = Product::inRandomOrder()->first() ?? Product::factory()->create();
+        $quantity = $this->faker->numberBetween(1, 10);
+
         return [
             'order_id' => Order::inRandomOrder()->first()->id ?? Order::factory()->create()->id,
-            'quantity' => $this->faker->numberBetween(1, 10),
+            'quantity' => $quantity,
+            'total_price' => $quantity * $product->price, // Tính total_price
+            'status' => $this->faker->randomElement(['pending', 'completed', 'canceled']),
             'product_color_id' => Product_Color::inRandomOrder()->first()->id ?? Product_Color::factory()->create()->id,
             'product_size_id' => Product_Size::inRandomOrder()->first()->id ?? Product_Size::factory()->create()->id,
-            'product_id' => Product::all()->random()->id,
+            'product_id' => $product->id,
         ];
     }
 }

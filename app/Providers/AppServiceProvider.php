@@ -77,6 +77,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ICart_ItemRepository::class, Cart_ItemRepository::class);
         $this->app->bind(IDiscount_AssignmentRepository::class, Discount_AssignmentRepository::class);
         $this->app->bind(ISizeRepository::class, SizeRepository::class);
+        
         $this->app->bind(IColorRepository::class, ColorRepository::class);
         $this->app->bind(IVirtualTryOnRepository::class, VirtualTryOnRepository::class);
 
@@ -89,6 +90,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(IWishlistService::class, WishlistService::class);
         $this->app->bind(IDiscountService::class, DiscountService::class);
         $this->app->bind(ISizeService::class, SizeService::class);
+
         $this->app->bind(IColorService::class, ColorService::class);
         $this->app->bind(IVirtualTryOnService::class, VirtualTryOnService::class);
     }

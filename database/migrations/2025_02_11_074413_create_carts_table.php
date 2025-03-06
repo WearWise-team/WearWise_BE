@@ -23,6 +23,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('cart_id');
             $table->integer('quantity');
+            $table->decimal("total_price",10,3);
             $table->integer('product_color_id');
             $table->integer('product_size_id');
             $table->integer('product_id');

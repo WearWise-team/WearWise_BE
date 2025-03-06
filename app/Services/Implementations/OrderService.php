@@ -37,11 +37,10 @@ class OrderService implements IOrderService
             if (empty($cartItems['cart'])) {
                 return response()->json(['message' => 'Giỏ hàng trống!'], 400);
             }
-
+            
             $order = $this->orderRepository->createOrder([
                 'user_id' => $userId,
                 'total_amount' => $totalPrice,
-                'status' => $status,
                 'payment_method' => $paymentMethod,
                 'order_date' => now()
             ], $userId);
@@ -51,6 +50,8 @@ class OrderService implements IOrderService
                     'order_id' => $order->id,
                     'product_id' => $item['product']['id'],
                     'quantity' => $item['quantity'],
+                    'status' => $status,
+                    'total_price' => $item['total_price'],
                     'product_color_id' => $item['color']['id'],
                     'product_size_id' => $item['size']['id']
                 ]);

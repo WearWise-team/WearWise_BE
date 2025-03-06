@@ -4,6 +4,7 @@ namespace App\Repositories\Implementations;
 
 use App\Models\Wishlist;
 use App\Repositories\Contracts\IWishlistRepository;
+use Illuminate\Support\Facades\Auth; 
 
 class WishlistRepository implements IWishlistRepository
 {
@@ -14,29 +15,32 @@ class WishlistRepository implements IWishlistRepository
         $this->model = $model;
     }
 
-    public function getAll()
+    
+    public function getAll(int $userId)
     {
-        return $this->model->all();
+        return Wishlist::where('user_id', $userId)->get();
     }
 
-    public function findById(int $id)
+    public function create(int $userId, array $data)
     {
-        return $this->model->find($id);
+        $existingWishlist = Wishlist::where('user_id', $userId)->where('product_id', $data['product_id'])->first();
+        if ($existingWishlist) {
+            $existingWishlist->delete();
+            return false;
+        }
+        return 
+             Wishlist::firstOrCreate([
+                  'user_id'    => $userId,
+                  'product_id' => $data['product_id'],
+             ]);
     }
 
-    public function create(array $data)
+    public function delete(int $userId,int $productId)
     {
-        return $this->model->create($data);
-    }
-
-    public function update(int $id, array $data)
-    {
-        $post = $this->model->find($id);
-        return $post ? $post->update($data) : null;
-    }
-
-    public function delete(int $id)
-    {
-        return $this->model->destroy($id);
+        $existingWishlist = Wishlist::where('user_id',$userId)->where('product_id', $productId)->first();
+        if ($existingWishlist) {
+            return $existingWishlist->delete();
+        }
+        return false;
     }
 }
