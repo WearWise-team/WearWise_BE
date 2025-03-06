@@ -20,6 +20,8 @@ use App\Repositories\Contracts\ISizeRepository;
 use App\Repositories\Contracts\ISupplierRepository;
 use App\Repositories\Contracts\IUserRepository;
 use App\Repositories\Contracts\IWishlistRepository;
+use App\Repositories\Contracts\IJWTRepository;
+use App\Repositories\Implementations\JWTRepository;
 use App\Repositories\Implementations\AuthRepository;
 use App\Repositories\Implementations\Cart_ItemRepository;
 use App\Repositories\Implementations\CartRepository;
@@ -46,6 +48,7 @@ use App\Services\Contracts\ISupplierService;
 use App\Services\Contracts\IUserService;
 use App\Services\Contracts\IVirtualTryOnService;
 use App\Services\Contracts\IWishlistService;
+use App\Services\Contracts\IJWTService;
 use App\Services\Implementations\CartService;
 use App\Services\Implementations\ColorService;
 use App\Services\Implementations\DiscountService;
@@ -57,6 +60,7 @@ use App\Services\Implementations\SupplierService;
 use App\Services\Implementations\UserService;
 use App\Services\Implementations\VirtualTryOnService;
 use App\Services\Implementations\WishlistService;
+use App\Services\Implementations\JWTService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -79,6 +83,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ISizeRepository::class, SizeRepository::class);
         $this->app->bind(IColorRepository::class, ColorRepository::class);
         $this->app->bind(IVirtualTryOnRepository::class, VirtualTryOnRepository::class);
+        $this->app->bind(IJWTRepository::class, JWTRepository::class);
 
         $this->app->bind(IUserService::class, UserService::class);
         $this->app->bind(ISupplierService::class, SupplierService::class);
@@ -91,6 +96,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ISizeService::class, SizeService::class);
         $this->app->bind(IColorService::class, ColorService::class);
         $this->app->bind(IVirtualTryOnService::class, VirtualTryOnService::class);
+        $this->app->bind(IJWTService::class, JWTService::class);
     }
 
     /**

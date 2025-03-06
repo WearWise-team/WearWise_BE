@@ -9,6 +9,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MoMoController;
 use App\Http\Controllers\VirtualTryOnController;
+use App\Http\Controllers\KlingAIController;
+use App\Http\Controllers\TryOnKController;
 
 Route::get('products', [ProductController::class, 'index']);
 Route::post('products', [ProductController::class, 'store']);
@@ -57,3 +59,7 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::post('/virtual-tryon', [VirtualTryOnController::class, 'tryOnClothes']);
+
+Route::post('/virtual-tryon-klingAI', [KlingAIController::class, 'tryOnClothesWithKling']);
+
+Route::get('/get-result-try-on/{taskId}', [TryOnKController::class, 'getTryOnResult']);
