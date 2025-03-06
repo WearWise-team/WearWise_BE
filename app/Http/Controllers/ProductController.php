@@ -106,4 +106,10 @@ class ProductController extends Controller
 
         return response()->json($products);
     }
+
+    public function getProductWithColorAndSize()
+    {
+        $products = $this->productService->getProductWithColorAndSize();
+        return response()->json($products);
+    }
 }

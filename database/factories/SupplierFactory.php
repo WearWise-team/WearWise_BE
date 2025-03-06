@@ -25,7 +25,7 @@ class SupplierFactory extends Factory
             'phone' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
             'avatar' => $this->faker->imageUrl(200, 200, 'business'),
-            'password'=> bcrypt('password'), 
+            'password'=> bcrypt('password'),
         ];
     }
 }

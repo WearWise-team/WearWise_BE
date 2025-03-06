@@ -257,4 +257,8 @@ class ProductRepository implements IProductRepository
 
         ])->get();
     }
+
+    public function getProductWithColorAndSize(){
+        return $this->model->with('colors', 'sizes')->get();
+    }
 }

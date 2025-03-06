@@ -53,4 +53,9 @@ class ProductService implements IProductService
     {
         return $this->productRepository->filterProduct($filters);
     }
+
+    public function getProductWithColorAndSize()
+    {
+        return $this->productRepository->getProductWithColorAndSize();
+    }
 }

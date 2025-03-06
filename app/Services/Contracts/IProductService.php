@@ -12,4 +12,5 @@ interface IProductService
     public function searchProductByName(string $name);
     public function getProductDetails(int $id);
     public function filterProduct(array $filters);
+    public function getProductWithColorAndSize();
 }
