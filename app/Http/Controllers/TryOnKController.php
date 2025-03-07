@@ -17,7 +17,8 @@ class TryOnKController extends Controller
 
     public function getTryOnResult(string $taskId, Request $request): JsonResponse
     {
-        $result = $this->tryOnKService->getTryOnResult($taskId, $request->token);
+        $token = $request->get('token');
+        $result = $this->tryOnKService->getTryOnResult($taskId, $token);
 
         return response()->json($result, isset($result['error']) ? 400 : 200);
     }

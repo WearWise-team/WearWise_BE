@@ -56,10 +56,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/orders/{userId}', [OrderController::class, 'index']);
     Route::post('/orders/{userId}', [OrderController::class, 'store']);
     Route::put('/orders', [OrderController::class, 'updateOrderStatus']);
+    Route::post('/virtual-tryon-klingAI', [KlingAIController::class, 'tryOnClothesWithKling']);
+    Route::post('/get-result-try-on/{taskId}', [TryOnKController::class, 'getTryOnResult']);
 });
 
 Route::post('/virtual-tryon', [VirtualTryOnController::class, 'tryOnClothes']);
 
-Route::post('/virtual-tryon-klingAI', [KlingAIController::class, 'tryOnClothesWithKling']);
-
-Route::get('/get-result-try-on/{taskId}', [TryOnKController::class, 'getTryOnResult']);
+Route::post('/get-token', [KlingAIController::class, 'generateToken']);

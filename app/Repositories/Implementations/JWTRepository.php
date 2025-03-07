@@ -25,7 +25,7 @@ class JWTRepository implements IJWTRepository
         curl_setopt_array($curl, [
             CURLOPT_URL => $apiUrl,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 30,
+            CURLOPT_TIMEOUT => 0,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_POST => true,

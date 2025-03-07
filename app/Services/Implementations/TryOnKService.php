@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Services\implements;
+namespace App\Services\Implementations;
 
 use App\Repositories\Contracts\ITryOnKRepository;
+use App\Services\Contracts\ITryOnKService;
 
-class TryOnKService
+class TryOnKService implements ITryOnKService
 {
     protected ITryOnKRepository $tryOnKRepository;
 

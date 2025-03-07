@@ -43,6 +43,7 @@ class JWTService implements IJWTService
     public function tryOnClothesWithKling($humanImageBase64, $clothImageBase64)
     {
         $token = $this->generateToken(); // Lấy token mới
+        // dd($humanImageBase64, $clothImageBase64, $token); 
         return $this->repository->sendRequestToKling($humanImageBase64, $clothImageBase64, $token);
     }
 }
