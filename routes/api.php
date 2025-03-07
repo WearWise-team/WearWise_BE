@@ -11,6 +11,9 @@ use App\Http\Controllers\MoMoController;
 use App\Http\Controllers\VirtualTryOnController;
 use App\Http\Controllers\KlingAIController;
 use App\Http\Controllers\TryOnKController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\WishlistController;
 
 Route::get('products', [ProductController::class, 'index']);
 Route::post('products', [ProductController::class, 'store']);
@@ -58,6 +61,16 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/orders', [OrderController::class, 'updateOrderStatus']);
     Route::post('/virtual-tryon-klingAI', [KlingAIController::class, 'tryOnClothesWithKling']);
     Route::post('/get-result-try-on/{taskId}', [TryOnKController::class, 'getTryOnResult']);
+
+    Route::prefix('reviews')->group(function () {
+        Route::post('/', [ReviewController::class, 'store']);
+    });
+    
+    Route::prefix('wishlists')->group(function () {
+        Route::get('/', [WishlistController::class, 'index']);
+        Route::post('/', [WishlistController::class, 'createWishlist']);
+        Route::delete('/{productId}', [WishlistController::class, 'destroyWishlist']);
+    });
 });
 
 Route::post('/virtual-tryon', [VirtualTryOnController::class, 'tryOnClothes']);

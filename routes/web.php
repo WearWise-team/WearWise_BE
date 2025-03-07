@@ -16,3 +16,4 @@ Route::get('/test-db', function () {
         return 'Database connection failed: ' . $e->getMessage();
     }
 });
+

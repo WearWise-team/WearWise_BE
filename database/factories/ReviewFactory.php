@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Order;
+use App\Models\Order_Item;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
@@ -26,6 +28,9 @@ class ReviewFactory extends Factory
             },
             'product_id' => function() {
                 return Product::factory()->create()->id;
+            },
+            'order_item_id' => function() {
+                return Order_Item::factory()->create()->id;
             },
             'rating' => $this->faker->numberBetween(1, 5),
             'content' => $this->faker->sentence(),

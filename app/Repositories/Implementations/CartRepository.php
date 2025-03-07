@@ -67,6 +67,7 @@ class CartRepository implements ICartRepository
                 'p.price',
                 'p.image',
                 'ci.quantity',
+                'ci.total_price',
                 'col.id as color_id',
                 'col.name as color_name',
                 'col.code as color_code',
@@ -86,7 +87,7 @@ class CartRepository implements ICartRepository
             'user_id' => $userId,
             'cart' => []
         ];
-
+        
         foreach ($cartItems as $item) {
             // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
             $existingIndex = array_search($item->cart_item_id, array_column($result['cart'], 'cart_item_id'));
@@ -113,6 +114,7 @@ class CartRepository implements ICartRepository
                         'code' => $item->color_code
                     ],
                     'quantity' => $item->quantity,
+                    'total_price' =>$item->total_price,
                     'discounts' => []
                 ];
 
@@ -169,12 +171,16 @@ class CartRepository implements ICartRepository
 
     public function addNewCartItem($cartId, $productId, $productColorId, $productSizeId, $quantity)
     {
+        // Lấy thông tin sản phẩm từ product_id
+        $product = Product::findOrFail($productId);
+
         return Cart_Item::create([
             'cart_id' => $cartId,
             'product_id' => $productId,
             'product_color_id' => $productColorId,
             'product_size_id' => $productSizeId,
             'quantity' => $quantity,
+            'total_price' => $quantity * $product->price, // Tính total_price
         ]);
     }
 
@@ -198,11 +204,16 @@ class CartRepository implements ICartRepository
     public function updateCartItemQuantity($cartItem, $quantity)
     {
         $cartItem->increment('quantity', $quantity);
+        $cartItem->update(['total_price' => $cartItem->quantity * $cartItem->product->price]);
+
     }
 
     public function updateCartItemQuantityExact($cartItem, $quantity)
     {
-        $cartItem->update(['quantity' => $quantity]);
+        $cartItem->update([
+            'quantity' => $quantity,
+            'total_price' => $quantity * $cartItem->product->price
+        ]);
     }
 
     public function removeCartItem($cartItem)
