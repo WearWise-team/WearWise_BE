@@ -18,7 +18,7 @@ class WishlistRepository implements IWishlistRepository
     
     public function getAll(int $userId)
     {
-        return Wishlist::where('user_id', $userId)->get();
+        return Wishlist::where('user_id', $userId)->with('product')->get();
     }
 
     public function create(int $userId, array $data)
