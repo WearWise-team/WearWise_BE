@@ -25,6 +25,8 @@ Route::get('/products/more/{id}', [ProductController::class, 'getProductDetails'
 Route::post('/products/filter', [ProductController::class, 'filterProduct']);
 
 Route::apiResource('users', controller: UserController::class);
+Route::get("/getAllUsersIsDeleted", [UserController::class, "getUsersIsDeleted"]);
+Route::put("/restoreUser/{id}", [UserController::class, "restoreUser"]);
 
 Route::group([
 

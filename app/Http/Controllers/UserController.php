@@ -14,17 +14,16 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    protected $userService; 
+    protected $userService;
     public function __construct(IUserService $userService)
     {
         $this->userService = $userService;
     }
     public function index()
     {
-        try
-        {
+        try {
             $user = $this->userService->getAllUsers();
-            return response()->json($user,status:200);
+            return response()->json($user, status: 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'An error occurred while fetching users', 'error' => $e->getMessage()], 500);
         }
@@ -45,15 +44,13 @@ class UserController extends Controller
     {
         $validateData = $request->validated();
         $validateData['password'] = bcrypt($validateData['password']);
-        
+
         try {
             $user = $this->userService->createUser($validateData);
             return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
-            
         } catch (Exception $e) {
             return response()->json(['message' => 'An error occurred while creating user', 'error' => $e->getMessage()], 500);
         }
-
     }
 
     /**
@@ -61,8 +58,7 @@ class UserController extends Controller
      */
     public function show(int $id)
     {
-        try 
-        {
+        try {
             $user = $this->userService->getUserById($id);
             if (!$user) {
                 return response()->json(['error' => 'User not found'], 404);
@@ -109,6 +105,34 @@ class UserController extends Controller
         } catch (Exception $e) {
             return response()->json(['error' => 'Failed to delete user', 'message' => $e->getMessage()], 500);
         }
+    }
 
+    public function getUsersIsDeleted()
+    {
+        try {
+            $user = $this->userService->getUsersIsDeleted();
+
+            if ($user === null) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+
+            return response()->json($user, 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while fetching user',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function restoreUser($id) {
+        try {
+            $this->userService->restoreUser($id);
+            return response()->json(['message' => 'User restored successfully']);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'User not found'], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to restore user', 'message' => $e->getMessage()], 500);
+        }
     }
 }
