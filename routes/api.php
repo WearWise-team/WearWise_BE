@@ -10,9 +10,11 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MoMoController;
 use App\Http\Controllers\VirtualTryOnController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\WishlistController;
 
+// Product routes
 Route::get('products', [ProductController::class, 'index']);
 Route::post('products', [ProductController::class, 'store']);
 Route::get('products/{id}', [ProductController::class, 'show']);
@@ -22,9 +24,12 @@ Route::post('/products/search', [ProductController::class, 'searchProductByName'
 Route::get('/products/more/{id}', [ProductController::class, 'getProductDetails']);
 Route::post('/products/filter', [ProductController::class, 'filterProduct']);
 Route::get('/productswithsize', [ProductController::class, 'getProductWithColorAndSize']);
+Route::post('/products/upload', [ProductController::class, 'uploadImages']);
 
+// User routes
 Route::apiResource('users', controller: UserController::class);
 
+// Auth routes
 Route::group([
 
     'middleware' => 'api',
@@ -38,14 +43,16 @@ Route::group([
     Route::get('profile', [AuthController::class, 'me']);
 });
 
+// Color routes
 Route::prefix('colors')->group(function () {
-    Route::get('/', [ColorController::class, 'index']); // Lấy danh sách màu
-    Route::get('/{id}', [ColorController::class, 'show']); // Lấy chi tiết màu theo ID
-    Route::post('/', [ColorController::class, 'store']); // Tạo mới một màu
-    Route::put('/{id}', [ColorController::class, 'update']); // Cập nhật màu
-    Route::delete('/{id}', [ColorController::class, 'destroy']); // Xóa màu
+    Route::get('/', [ColorController::class, 'index']);
+    Route::get('/{id}', [ColorController::class, 'show']);
+    Route::post('/', [ColorController::class, 'store']); 
+    Route::put('/{id}', [ColorController::class, 'update']); 
+    Route::delete('/{id}', [ColorController::class, 'destroy']);
 });
 
+// Momo Service
 Route::post('/momo/payment', [MoMoController::class, 'createPayment']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/myCart/{user_id}', [CartController::class, 'getCartItemsByUserId']);
@@ -54,6 +61,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/cart/remove', [CartController::class, 'removeCartItem']);
 });
 
+// Order routes
 Route::middleware('auth:api')->group(function () {
     Route::get('/orders/{userId}', [OrderController::class, 'index']);
     Route::post('/orders/{userId}', [OrderController::class, 'store']);
@@ -70,4 +78,17 @@ Route::middleware('auth:api')->group(function () {
     });
 });
 
+// tryon routes
 Route::post('/virtual-tryon', [VirtualTryOnController::class, 'tryOnClothes']);
+
+// Size routes
+Route::prefix('sizes')->group(function () {
+    Route::get('/', [SizeController::class, 'index']);
+});
+
+
+// Supplier routes
+Route::prefix('suppliers')->group(function () {
+    Route::get('/', [SupplierController::class, 'index']);
+    Route::get('/getSupplierByUserID/{user_id}', [SupplierController::class, 'getSupplierByUserID']);
+});

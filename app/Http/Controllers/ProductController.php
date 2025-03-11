@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Contracts\IProductService;
 use App\Http\Requests\DTO\ProductRequestDTO;
+use App\Services\Contracts\IProductService;
+use App\Models\Product;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
-
 class ProductController extends Controller
 {
     protected $productService;
@@ -28,22 +29,10 @@ class ProductController extends Controller
     /**
      * Store a newly created product in the database.
      */
-    public function store(ProductRequestDTO $request)
+    public function store(Request $request)
     {
-        $validated = $request->validated();
-
-        $product = $this->productService->createProduct([
-            'name' => $validated['name'],
-            'price' => $validated['price'],
-            'description' => $validated['description'],
-            'image' => $validated['image'] ?? null,
-            'quantity' => $validated['quantity'],
-            'supplier_id' => $validated['supplier_id'],
-        ]);
-
-        return response()->json($product, 201);
+        return $this->productService->createProduct($request);
     }
-
     /**
      * Display the specified product.
      */
@@ -113,3 +102,4 @@ class ProductController extends Controller
         return response()->json($products);
     }
 }
+    

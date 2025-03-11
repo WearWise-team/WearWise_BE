@@ -11,28 +11,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seed dữ liệu cơ bản trước (không có quan hệ phức tạp)
+        
         $this->call([
-            ProductSeeder::class, // Cần product trước
+            ProductSeeder::class,
             UserSeeder::class,
             SupplierSeeder::class,
-            SizeSeeder::class,
-            ColorSeeder::class,
+            // SizeSeeder::class,
+            // ColorSeeder::class,
             DiscountSeeder::class,
             ImageSeeder::class,
-            Product_ColorSeeder::class, // Sau khi có product, seed color
-            Product_SizeSeeder::class,  // Sau khi có product, seed size
+            Product_ColorSeeder::class,
+            Product_SizeSeeder::class,  
             DiscountAssignmentSeeder::class,
             ReviewSeeder::class,
             WishlistSeeder::class,
-            CartSeeder::class, // Cần có cart trước
-            OrderSeeder::class, // Cần có order trước
+            CartSeeder::class,
+            OrderSeeder::class, 
+            
         ]);
-
-        // Seed dữ liệu có quan hệ phụ thuộc (CartItem, OrderItem)
         $this->call([
-            CartItemSeeder::class,  // Cart_Item phụ thuộc Cart + Product + Color + Size
-            OrderItemSeeder::class, // Order_Item phụ thuộc Order + Product + Color + Size
+            CartItemSeeder::class, 
+            OrderItemSeeder::class,
         ]);
     }
 }

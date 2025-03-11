@@ -15,19 +15,19 @@ class Supplier extends Model
 
     protected $fillable = [
         'name',
-        'email',
         'phone',
         'address',
         'avatar',
-        'password'
-    ];
-
-    protected $hidden = [
-        'password'
+        'user_id'
     ];
 
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

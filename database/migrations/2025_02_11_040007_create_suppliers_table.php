@@ -15,11 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('phone')->nullable();
-            $table->string('avatar')->default('https://placehold.co/100x100');
+            $table->string('avatar')->default('https://byvn.net/7yAv')->nullable();
             $table->string('address')->nullable();
-            $table->string('password');
-            $table->string('email')->unique();
-            $table->string('role')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });

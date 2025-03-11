@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Supplier;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 
@@ -21,11 +22,12 @@ class SupplierFactory extends Factory
     {
         return [
             'name' => $this->faker->company(),
-            'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
             'avatar' => $this->faker->imageUrl(200, 200, 'business'),
-            'password'=> bcrypt('password'),
+            'user_id' => function () {
+                return User::factory()->create()->id;
+            },
         ];
     }
 }

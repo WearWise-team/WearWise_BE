@@ -2,8 +2,10 @@
 
 namespace App\Repositories\Implementations;
 
+use App\Models\Image;
 use App\Models\Product;
 use App\Repositories\Contracts\IProductRepository;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Facades\DB;
 
 class ProductRepository implements IProductRepository
@@ -27,11 +29,22 @@ class ProductRepository implements IProductRepository
         return $this->model->find($id);
     }
 
-    public function create(array $data)
+    public function create(array $data): Product
     {
-        return $this->model->create($data);
+        return $this->model-> create($data);
     }
 
+    public function attachColors(Product $product, array $colorIds): void
+    {
+        $product->colors()->sync($colorIds);
+    }
+
+    public function attachSizes(Product $product, array $sizeIds): void
+    {
+        $product->sizes()->sync($sizeIds);
+    }
+
+    
     public function update(int $id, array $data)
     {
         $post = $this->model->find($id);
@@ -259,6 +272,6 @@ class ProductRepository implements IProductRepository
     }
 
     public function getProductWithColorAndSize(){
-        return $this->model->with('colors', 'sizes')->get();
+        return $this->model->with('colors', 'sizes', 'images')->get();
     }
 }

@@ -34,7 +34,6 @@ class UserRequestDTO extends FormRequest
                 'regex:/[\W_]/',
             ],
             'phone'      => 'nullable|string|regex:/^[0-9\-\+]{9,15}$/',
-            'avatar'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'address'    => 'nullable|string|max:500',
             'role'       => 'required|in:admin,user,supplier',
             'weight'     => 'nullable|numeric|min:1|max:300',

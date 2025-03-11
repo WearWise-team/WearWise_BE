@@ -18,7 +18,7 @@ class UserFactory extends Factory
             'phone' => $this->faker->optional()->phoneNumber(),
             'avatar' => "https://placehold.co/100x100",
             'address' => $this->faker->optional()->address(),
-            'role' => $this->faker->optional()->randomElement(['admin', 'user']),
+            'role' => $this->faker->optional()->randomElement(['admin', 'user', 'supplier']),
             'weight' => $this->faker->optional()->randomFloat(2, 40, 120),
             'height' => $this->faker->optional()->randomFloat(2, 140, 200),
             'shirt_size' => $this->faker->optional()->randomElement(['S', 'M', 'L', 'XL', 'XXL']),

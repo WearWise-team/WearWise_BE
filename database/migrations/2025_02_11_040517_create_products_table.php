@@ -28,6 +28,7 @@ return new class extends Migration
 
         Schema::create('sizes', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->string('shirt_size');
             $table->string('pant_size');
             $table->string('minimun_weight');

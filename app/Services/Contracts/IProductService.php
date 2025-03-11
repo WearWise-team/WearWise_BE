@@ -2,11 +2,14 @@
 
 namespace App\Services\Contracts;
 
+use Illuminate\Http\Request;
+
+
 interface IProductService
 {
     public function getAllProducts();
     public function getProductById(int $id);
-    public function createProduct(array $data);
+    public function createProduct(Request $request);
     public function updateProduct(int $id, array $data);
     public function deleteProduct(int $id);
     public function searchProductByName(string $name);

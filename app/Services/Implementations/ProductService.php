@@ -1,9 +1,14 @@
 <?php
 
-namespace App\Services\Implementations; 
+namespace App\Services\Implementations;
 
+use App\Models\Image;
 use App\Repositories\Contracts\IProductRepository;
 use App\Services\Contracts\IProductService;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ProductService implements IProductService
 {
@@ -24,9 +29,98 @@ class ProductService implements IProductService
         return $this->productRepository->findById($id);
     }
 
-    public function createProduct(array $data)
+    public function createProduct(Request $request)
     {
-        return $this->productRepository->create($data);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'main_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'images' => 'required|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'quantity' => 'required|integer|min:0',
+            'category' => 'required|string|max:255',
+            'supplier_id' => 'required|integer|exists:suppliers,id',
+            'colors' => 'nullable|array',
+            'colors.*' => 'exists:colors,id',
+            'sizes' => 'nullable|array',
+            'sizes.*' => 'exists:sizes,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Upload main image
+            $mainImageUrl = null;
+            if ($request->hasFile('main_image')) {
+                $uploadedMainImage = Cloudinary::upload($request->file('main_image')->getRealPath(), [
+                    'folder' => 'products/main',
+                    'verify' => false
+                ]);
+                $mainImageUrl = $uploadedMainImage->getSecurePath();
+            }
+
+            // Create product
+            $productData = [
+                'name' => $request->name,
+                'description' => $request->description,
+                'price' => $request->price,
+                'main_image' => $mainImageUrl,
+                'quantity' => $request->quantity,
+                'category' => $request->category,
+                'supplier_id' => $request->supplier_id,
+                'rating_avg' => $request->rating_avg ?? null,
+            ];
+            $product = $this->productRepository->create($productData);
+
+            // Upload additional images
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $uploadedImage = Cloudinary::upload($image->getRealPath(), [
+                        'folder' => 'products/additional',
+                        'verify' => false
+                    ]);
+                    $product->images()->create([
+                        'url' => $uploadedImage->getSecurePath()
+                    ]);
+                }
+            }
+
+            // Attach colors
+            if ($request->has('colors') && is_array($request->colors)) {
+                $product->colors()->attach($request->colors);
+            }
+
+            // Attach sizes
+            if ($request->has('sizes') && is_array($request->sizes)) {
+                $product->sizes()->attach($request->sizes);
+            }
+
+            DB::commit();
+
+            // Load relationships
+            $product->load(['images', 'colors', 'sizes']);
+
+            return response()->json([
+                'success' => true,
+                'data' => $product
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create product',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function updateProduct(int $id, array $data)
