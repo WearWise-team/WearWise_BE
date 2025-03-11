@@ -9,6 +9,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MoMoController;
 use App\Http\Controllers\VirtualTryOnController;
+use App\Http\Controllers\KlingAIController;
+use App\Http\Controllers\TryOnKController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SupplierController;
@@ -28,6 +30,8 @@ Route::post('/products/upload', [ProductController::class, 'uploadImages']);
 
 // User routes
 Route::apiResource('users', controller: UserController::class);
+Route::get("/getAllUsersIsDeleted", [UserController::class, "getUsersIsDeleted"]);
+Route::put("/restoreUser/{id}", [UserController::class, "restoreUser"]);
 
 // Auth routes
 Route::group([
@@ -66,6 +70,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/orders/{userId}', [OrderController::class, 'index']);
     Route::post('/orders/{userId}', [OrderController::class, 'store']);
     Route::put('/orders', [OrderController::class, 'updateOrderStatus']);
+    Route::post('/virtual-tryon-klingAI', [KlingAIController::class, 'tryOnClothesWithKling']);
+    Route::post('/get-result-try-on/{taskId}', [TryOnKController::class, 'getTryOnResult']);
 
     Route::prefix('reviews')->group(function () {
         Route::post('/', [ReviewController::class, 'store']);
@@ -80,6 +86,8 @@ Route::middleware('auth:api')->group(function () {
 
 // tryon routes
 Route::post('/virtual-tryon', [VirtualTryOnController::class, 'tryOnClothes']);
+
+Route::post('/get-token', [KlingAIController::class, 'generateToken']);
 
 // Size routes
 Route::prefix('sizes')->group(function () {

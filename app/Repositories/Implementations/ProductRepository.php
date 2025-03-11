@@ -31,7 +31,7 @@ class ProductRepository implements IProductRepository
 
     public function create(array $data): Product
     {
-        return $this->model-> create($data);
+        return $this->model->create($data);
     }
 
     public function attachColors(Product $product, array $colorIds): void
@@ -44,7 +44,7 @@ class ProductRepository implements IProductRepository
         $product->sizes()->sync($sizeIds);
     }
 
-    
+
     public function update(int $id, array $data)
     {
         $post = $this->model->find($id);
@@ -91,12 +91,13 @@ class ProductRepository implements IProductRepository
                 'products.description',
                 'products.price',
                 'products.quantity',
-                'products.image',
+                'products.main_image',
                 'suppliers.id as supplier_id',
                 'suppliers.name as supplier_name',
                 'suppliers.address as supplier_address',
                 'suppliers.avatar',
                 'suppliers.phone',
+                'sizes.name',
                 'sizes.id as size_id',
                 'sizes.shirt_size',
                 'sizes.pant_size',
@@ -135,7 +136,7 @@ class ProductRepository implements IProductRepository
             'description' => $productData[0]->description,
             'price' => $productData[0]->price,
             'quantity' => $productData[0]->quantity,
-            'image' => $productData[0]->image,
+            'main_image' => $productData[0]->main_image,
             'supplier' => [
                 'id' => $productData[0]->supplier_id,
                 'name' => $productData[0]->supplier_name,
@@ -175,6 +176,7 @@ class ProductRepository implements IProductRepository
                     'id' => $row->size_id,
                     'shirt_size' => $row->shirt_size,
                     'pant_size' => $row->pant_size,
+                    'name' => $row->name,
                     'minimun_weight' => $row->minimun_weight,
                     'maximun_weight' => $row->maximun_weight,
                     'minimun_height' => $row->minimun_height,
@@ -271,7 +273,8 @@ class ProductRepository implements IProductRepository
         ])->get();
     }
 
-    public function getProductWithColorAndSize(){
+    public function getProductWithColorAndSize()
+    {
         return $this->model->with('colors', 'sizes', 'images')->get();
     }
 }

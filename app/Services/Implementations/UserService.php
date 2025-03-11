@@ -61,4 +61,12 @@ class UserService implements IUserService
     {
         return $this->userRepository->delete($id);
     }
+
+    public function getUsersIsDeleted() {
+        return $this->userRepository->getUsersIsDeleted();
+    }
+
+    public function restoreUser(int $id) {
+        return $this->userRepository->restoreUser($id);
+    }
 }
