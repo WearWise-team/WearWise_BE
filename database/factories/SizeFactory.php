@@ -20,6 +20,7 @@ class SizeFactory extends Factory
     public function definition(): array
     {
         return [
+            'name'=> $this->faker->word(),
             'shirt_size' => $this->faker->randomElement(['S', 'M', 'L', 'XL', 'XXL']),
             'pant_size' => $this->faker->numberBetween(28, 40),
             'minimun_weight' => $this->faker->numberBetween(40, 60),

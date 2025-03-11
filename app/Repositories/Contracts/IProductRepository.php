@@ -2,6 +2,8 @@
 
 namespace App\Repositories\Contracts;
 
+use App\Models\Product;
+
 interface IProductRepository
 {
     public function getAll();
@@ -12,4 +14,10 @@ interface IProductRepository
     public function search(string $name);
     public function GetProductDetails(int $id);
     public function filterProduct(array $filters);
+    public function getProductWithColorAndSize();
+
+    public function attachColors(Product $product, array $colorIds): void;
+
+    public function attachSizes(Product $product, array $sizeIds): void;
+
 }

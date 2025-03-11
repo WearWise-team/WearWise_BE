@@ -39,4 +39,9 @@ class SupplierRepository implements ISupplierRepository
     {
         return $this->model->destroy($id);
     }
+
+    public function getSupplierByUserID($user_id)
+    {
+        return $this->model::where('user_id', $user_id)->first();
+    }
 }

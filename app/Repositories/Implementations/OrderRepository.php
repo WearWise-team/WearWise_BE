@@ -29,11 +29,12 @@ class OrderRepository implements IOrderRepository
                 'oi.status',
                 'p.id as product_id',
                 'p.name as product_name',
-                'p.image',
+                'p.main_image',
                 'p.price',
                 'col.id as color_id',
                 'col.name as color_name',
                 's.id as size_id',
+                's.name',
                 's.shirt_size',
                 's.pant_size',
                 DB::raw('CASE WHEN r.id IS NOT NULL THEN true ELSE false END as reviewed') // Kiểm tra review

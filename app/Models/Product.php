@@ -17,7 +17,7 @@ class Product extends Model
         'name',
         'description',
         'price',
-        'image',
+        'main_image',
         'quantity',
         'category',
         'supplier_id',
@@ -70,7 +70,7 @@ class Product extends Model
             ->withTimestamps();
     }
 
-    public function image()
+    public function images()
     {
         return $this->hasMany(Image::class);
     }

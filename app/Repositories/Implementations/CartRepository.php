@@ -65,7 +65,7 @@ class CartRepository implements ICartRepository
                 'p.name as product_name',
                 'p.description',
                 'p.price',
-                'p.image',
+                'p.main_image',
                 'ci.quantity',
                 'ci.total_price',
                 'col.id as color_id',
@@ -74,6 +74,7 @@ class CartRepository implements ICartRepository
                 's.id as size_id',
                 's.shirt_size',
                 's.pant_size',
+                's.name',
                 'd.id as discount_id',
                 'd.code as discount_code',
                 'd.description as discount_description',
@@ -101,10 +102,11 @@ class CartRepository implements ICartRepository
                         'name' => $item->product_name,
                         'description' => $item->description,
                         'price' => $item->price,
-                        'image' => $item->image,
+                        'main_image' => $item->main_image,
                     ],
                     'size' => [
                         'id' => $item->size_id,
+                        'name' => $item -> name,
                         'shirt_size' => $item->shirt_size,
                         'pant_size' => $item->pant_size
                     ],
@@ -204,7 +206,7 @@ class CartRepository implements ICartRepository
     public function updateCartItemQuantity($cartItem, $quantity)
     {
         $cartItem->increment('quantity', $quantity);
-        $cartItem->update(['total_price' => $cartItem->quantity * $cartItem->product->price]);
+        $cartItem->update(['total_price' => $cartItem->quantity * $cartItem->product?->price]);
 
     }
 
@@ -212,7 +214,7 @@ class CartRepository implements ICartRepository
     {
         $cartItem->update([
             'quantity' => $quantity,
-            'total_price' => $quantity * $cartItem->product->price
+            'total_price' => $quantity * $cartItem->product?->price
         ]);
     }
 

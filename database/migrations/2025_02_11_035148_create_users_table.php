@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
-            $table->string('avatar')->default('https://placehold.co/100x100')->nullable();
+            $table->string('avatar')->default('https://byvn.net/7yAv')->nullable();
             $table->string('email')->unique();
             $table->string('password');
             $table->string('weight')->nullable();

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('description')->nullable();
             $table->decimal('price');
-            $table->string('image');
+            $table->string('main_image');
             $table->integer('quantity');
             $table->string('category')->default('uncategorized');
             $table->unsignedBigInteger('supplier_id');
@@ -28,6 +28,7 @@ return new class extends Migration
 
         Schema::create('sizes', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->string('shirt_size');
             $table->string('pant_size');
             $table->string('minimun_weight');
