@@ -3,6 +3,7 @@
 namespace App\Repositories\Implementations;
 
 use App\Models\Order;
+use App\Models\Order_Item;
 use App\Repositories\Contracts\IOrderRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -68,5 +69,33 @@ class OrderRepository implements IOrderRepository
             ->where('id', $orderId)
             ->where('user_id', $userId)
             ->update(['status' => $status, 'updated_at' => now()]);
+    }
+
+    public function createOrderWithItems(int $userId, array $orderData, array $orderItems)
+    {
+        return DB::transaction(function () use ($userId, $orderData, $orderItems) {
+            // Tạo Order
+            $order = Order::create([
+                'user_id' => $userId,
+                'total_amount' => $orderData['total_amount'] ?? 0,
+                'payment_method' => $orderData['payment_method'] ?? 'COD',
+                'order_date' => now()
+            ]);
+
+            // Tạo Order Items
+            foreach ($orderItems as $item) {
+                Order_Item::create([
+                    'order_id' => $order->id,
+                    'quantity' => $item['quantity'],
+                    'status' => $item['status'] ?? 'pending',
+                    'total_price' => $item['total_price'],
+                    'product_color_id' => $item['product_color_id'],
+                    'product_size_id' => $item['product_size_id'],
+                    'product_id' => $item['product_id']
+                ]);
+            }
+
+            return $order;
+        });
     }
 }

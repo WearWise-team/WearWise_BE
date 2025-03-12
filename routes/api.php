@@ -70,6 +70,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/orders/{userId}', [OrderController::class, 'index']);
     Route::post('/orders/{userId}', [OrderController::class, 'store']);
     Route::put('/orders', [OrderController::class, 'updateOrderStatus']);
+    Route::post('/products/create-order', [OrderController::class, 'createOrderWithItems']);
     Route::post('/virtual-tryon-klingAI', [KlingAIController::class, 'tryOnClothesWithKling']);
     Route::post('/get-result-try-on/{taskId}', [TryOnKController::class, 'getTryOnResult']);
 
