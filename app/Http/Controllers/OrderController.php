@@ -64,8 +64,8 @@ class OrderController extends Controller
             'order_items' => 'required|array',
             'order_items.*.quantity' => 'required',
             'order_items.*.total_price' => 'required',
-            'order_items.*.product_color_id' => 'required|exists:product_colors,id',
-            'order_items.*.product_size_id' => 'required|exists:product_sizes,id',
+            'order_items.*.product_color_id' => 'required|exists:product_colors,color_id',
+            'order_items.*.product_size_id' => 'required|exists:product_sizes,size_id',
             'order_items.*.product_id' => 'required|exists:products,id',
         ]);
 
