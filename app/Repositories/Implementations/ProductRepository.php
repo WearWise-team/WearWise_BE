@@ -114,9 +114,9 @@ class ProductRepository implements IProductRepository
                 'discounts.id as discount_id',
                 'discounts.code as discount_code',
                 'discounts.description as discount_description',
-                'discount_assignments.start_date',
-                'discount_assignments.end_date',
-                'discount_assignments.percentage',
+                'discounts.start_date',
+                'discounts.end_date',
+                'discounts.percentage',
                 'reviews.id as review_id',
                 'reviews.content as review_content',
                 'reviews.rating',
@@ -263,11 +263,11 @@ class ProductRepository implements IProductRepository
             'colors',
             'sizes',
             'reviews' => function ($q) {
-                $q->select('id', 'product_id', 'rating', 'content'); // Giới hạn cột trả về nếu cần
+                $q->select('id', 'product_id', 'rating', 'content');
             },
             'discounts' => function ($q) {
                 $q->select('discounts.id', 'discounts.code', 'discounts.description')
-                    ->withPivot('start_date', 'end_date', 'percentage'); // Không cần join lại bảng trung gian
+                    ->withPivot('start_date', 'end_date', 'percentage');
             }
 
         ])->get();
@@ -277,4 +277,8 @@ class ProductRepository implements IProductRepository
     {
         return $this->model->with('colors', 'sizes', 'images')->get();
     }
-}
+
+    public function getProductBySupplierID(int $supplierId){
+        return $this->model::with('colors','sizes','images', 'discounts')->where('supplier_id', $supplierId)->get();
+    }
+}   

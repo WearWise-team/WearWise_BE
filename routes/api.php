@@ -5,6 +5,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ColorController;
+use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MoMoController;
@@ -26,7 +27,9 @@ Route::post('/products/search', [ProductController::class, 'searchProductByName'
 Route::get('/products/more/{id}', [ProductController::class, 'getProductDetails']);
 Route::post('/products/filter', [ProductController::class, 'filterProduct']);
 Route::get('/productswithsize', [ProductController::class, 'getProductWithColorAndSize']);
+Route::get('/productsbysupplierID/{id}', [ProductController::class, 'getProductBySupplierID']);
 Route::post('/products/upload', [ProductController::class, 'uploadImages']);
+Route::patch('/products/{id}/restore', [ProductController::class, 'restoreProduct']);
 
 // User routes
 Route::apiResource('users', controller: UserController::class);
@@ -99,4 +102,8 @@ Route::prefix('sizes')->group(function () {
 Route::prefix('suppliers')->group(function () {
     Route::get('/', [SupplierController::class, 'index']);
     Route::get('/getSupplierByUserID/{user_id}', [SupplierController::class, 'getSupplierByUserID']);
+});
+
+Route::prefix('discounts')->group(function () {
+    Route::get('/', [DiscountController::class, 'index']);
 });

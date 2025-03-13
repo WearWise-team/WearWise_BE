@@ -2,8 +2,9 @@
 
 namespace App\Services\Implementations;
 use App\Repositories\Contracts\IDiscountRepository;
+use App\Services\Contracts\IDiscountService;
 
-class DiscountService
+class DiscountService implements IDiscountService
 {
     protected $discountRepository;
 
@@ -27,7 +28,7 @@ class DiscountService
         return $this->discountRepository->create($data);
     }
 
-    public function updateDiscount(int $id, array $data)
+    public function updateDiscount(array $data, int $id)
     {
         return $this->discountRepository->update($id, $data);
     }

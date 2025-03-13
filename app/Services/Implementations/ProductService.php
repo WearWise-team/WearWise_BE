@@ -34,17 +34,19 @@ class ProductService implements IProductService
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
+            'price' => 'required|numeric|min:1',
             'main_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'images' => 'required|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'quantity' => 'required|integer|min:0',
+            'quantity' => 'required|integer|min:1',
             'category' => 'required|string|max:255',
             'supplier_id' => 'required|integer|exists:suppliers,id',
-            'colors' => 'nullable|array',
+            'colors' => 'required|array',
             'colors.*' => 'exists:colors,id',
-            'sizes' => 'nullable|array',
+            'sizes' => 'required|array',
             'sizes.*' => 'exists:sizes,id',
+            'discounts' => 'required|array',
+            'discounts.*' => 'exists:discounts,id',
         ]);
 
         if ($validator->fails()) {
@@ -103,10 +105,15 @@ class ProductService implements IProductService
                 $product->sizes()->attach($request->sizes);
             }
 
+            // Attach discount
+            if ($request->has('discounts') && is_array($request->discounts)) {
+                $product->discounts()->attach($request->discounts);
+            }
+
             DB::commit();
 
             // Load relationships
-            $product->load(['images', 'colors', 'sizes']);
+            $product->load(['images', 'colors', 'sizes', 'discounts']);
 
             return response()->json([
                 'success' => true,
@@ -151,5 +158,10 @@ class ProductService implements IProductService
     public function getProductWithColorAndSize()
     {
         return $this->productRepository->getProductWithColorAndSize();
+    }
+
+    public function getProductBySupplierID(int $supplierId)
+    {
+        return $this->productRepository->getProductBySupplierID($supplierId);
     }
 }
