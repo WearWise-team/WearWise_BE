@@ -78,9 +78,9 @@ class CartRepository implements ICartRepository
                 'd.id as discount_id',
                 'd.code as discount_code',
                 'd.description as discount_description',
-                'da.start_date',
-                'da.end_date',
-                'da.percentage as discount_percentage'
+                'd.start_date',
+                'd.end_date',
+                'd.percentage as discount_percentage'
             )
             ->get();
 
