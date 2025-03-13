@@ -67,4 +67,8 @@ class OrderService implements IOrderService
     {
         return $this->orderRepository->updateOrderStatus($userId, $orderId, $status);
     }
+
+    public function createOrderWithItems(int $userId, array $orderData, array $orderItems) {
+        return $this->orderRepository->createOrderWithItems($userId, $orderData, $orderItems);
+    }
 }

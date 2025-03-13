@@ -54,6 +54,30 @@ class OrderController extends Controller
 
         return response()->json(['message' => 'Cập nhật trạng thái đơn hàng thành công'], 200);
     }
-}
 
-?>
+    public function createOrderWithItems(Request $request)
+    {
+        $validatedData = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'total_amount' => 'required',
+            'payment_method' => 'required|string',
+            'order_items' => 'required|array',
+            'order_items.*.quantity' => 'required',
+            'order_items.*.total_price' => 'required',
+            'order_items.*.product_color_id' => 'required|exists:product_colors,id',
+            'order_items.*.product_size_id' => 'required|exists:product_sizes,id',
+            'order_items.*.product_id' => 'required|exists:products,id',
+        ]);
+
+        $order = $this->orderService->createOrderWithItems(
+            $validatedData['user_id'],
+            [
+                'total_amount' => $validatedData['total_amount'],
+                'payment_method' => $validatedData['payment_method']
+            ],
+            $validatedData['order_items']
+        );
+
+        return response()->json(['message' => 'Order created successfully', 'order' => $order], 201);
+    }
+}

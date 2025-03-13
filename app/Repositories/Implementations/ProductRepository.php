@@ -19,9 +19,14 @@ class ProductRepository implements IProductRepository
 
     public function getAll()
     {
-        return $this->model->with(['reviews', 'discounts' => function ($query) {
-            $query->latest()->take(1);
-        }])->get();
+        return $this->model->with([
+            'reviews',
+            'discounts' => function ($query) {
+                $query->latest()->take(1);
+            },
+            'sizes',
+            'colors'
+        ])->get();
     }
 
     public function findById(int $id)
