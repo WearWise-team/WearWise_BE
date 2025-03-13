@@ -66,8 +66,7 @@ class ProductRepository implements IProductRepository
         return Product::where('name', 'LIKE', "%$name%")
             ->with([
                 'discounts' => function ($q) {
-                    $q->select('discounts.id', 'discounts.code', 'discounts.description')
-                        ->withPivot('start_date', 'end_date', 'percentage');
+                    $q->select('discounts.id', 'discounts.code', 'discounts.description', 'discounts.start_date', 'discounts.end_date', 'discounts.percentage');
                 },
                 'reviews' => function ($q) {
                     $q->select('reviews.id', 'reviews.product_id', 'reviews.rating', 'reviews.content');
@@ -271,8 +270,7 @@ class ProductRepository implements IProductRepository
                 $q->select('id', 'product_id', 'rating', 'content');
             },
             'discounts' => function ($q) {
-                $q->select('discounts.id', 'discounts.code', 'discounts.description')
-                    ->withPivot('start_date', 'end_date', 'percentage');
+                $q->select('discounts.id', 'discounts.code', 'discounts.description', 'discounts.start_date', 'discounts.end_date', 'discounts.percentage');
             }
 
         ])->get();
