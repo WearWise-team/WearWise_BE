@@ -7,6 +7,7 @@ use App\Services\Contracts\IProductService;
 use App\Models\Product;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 class ProductController extends Controller
 {
     protected $productService;
@@ -66,9 +67,18 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
+        $product = $this->productService->getProductById($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
         $this->productService->deleteProduct($id);
 
-        return response()->json(null, 204);
+        return response()->json([
+            'message' => 'Product deleted successfully',
+            'deleted_product' => $product
+        ], 200);
     }
 
     public function searchProductByName(Request $request)
@@ -100,6 +110,38 @@ class ProductController extends Controller
     {
         $products = $this->productService->getProductWithColorAndSize();
         return response()->json($products);
+    }
+
+    public function getProductBySupplierID(int $supplierId)
+    {
+        $products = $this->productService->getProductBySupplierID($supplierId);
+        return response()->json($products);
+    }
+
+    public function restoreProduct($id)
+    {
+        // Tìm sản phẩm đã bị xóa mềm (soft deleted)
+        $product = Product::onlyTrashed()->find($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found or not deleted'], 404);
+        }
+        $product->restore();
+        DB::table('product_sizes')
+            ->where('product_id', $id)
+            ->update(['deleted_at' => null]);
+
+        DB::table('product_colors')
+            ->where('product_id', $id)
+            ->update(['deleted_at' => null]);
+
+        DB::table('discount_assignments')
+            ->where('product_id', $id)
+            ->update(['deleted_at' => null]);
+
+        $product->images()->withTrashed()->restore();
+
+        return response()->json(['message' => 'Product and related data restored successfully', 'product' => $product]);
     }
 }
     
