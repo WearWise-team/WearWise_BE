@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\DTO\ProductRequestDTO;
+use Illuminate\Support\Facades\Validator;
 use App\Services\Contracts\IProductService;
 use App\Models\Product;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
 class ProductController extends Controller
 {
     protected $productService;
@@ -47,21 +49,10 @@ class ProductController extends Controller
     /**
      * Update the specified product in the database.
      */
-    public function update($id, ProductRequestDTO $request)
+    public function updateProduct(Request $request, $id)
     {
-        $validated = $request->validated();
-
-        $product = $this->productService->updateProduct($id, [
-            'name' => $validated['name'],
-            'price' => $validated['price'],
-            'description' => $validated['description'],
-            'image' => $validated['image'] ?? null,
-            'quantity' => $validated['quantity'],
-        ]);
-
-        return response()->json($product);
+        return $this->productService->updateProduct($id, $request->all());
     }
-
     /**
      * Remove the specified product from the database.
      */
