@@ -15,10 +15,6 @@ interface IProductRepository
     public function GetProductDetails(int $id);
     public function filterProduct(array $filters);
     public function getProductWithColorAndSize();
-
-    public function attachColors(Product $product, array $colorIds): void;
-
-    public function attachSizes(Product $product, array $sizeIds): void;
     
     public function getProductBySupplierID(int $supplierId);
 }

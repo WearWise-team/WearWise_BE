@@ -130,9 +130,73 @@ class ProductService implements IProductService
         }
     }
 
-    public function updateProduct(int $id, array $data)
+    public function updateProduct($id, $data)
     {
-        return $this->productRepository->update($id, $data);
+        $validator = Validator::make($data, [
+            'name' => 'sometimes|string|max:255',
+            'description' => 'sometimes|string',
+            'price' => 'sometimes|numeric|min:1',
+            'main_image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'images' => 'sometimes|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'quantity' => 'sometimes|integer|min:1',
+            'category' => 'sometimes|string|max:255',
+            'supplier_id' => 'sometimes|integer|exists:suppliers,id',
+            'colors' => 'sometimes|array',
+            'colors.*' => 'exists:colors,id',
+            'sizes' => 'sometimes|array',
+            'sizes.*' => 'exists:sizes,id',
+            'discounts' => 'sometimes|array',
+            'discounts.*' => 'exists:discounts,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+        }
+        DB::beginTransaction();
+        try {
+            $product = $this->productRepository->findById($id);
+            if (!$product) {
+                return response()->json(['success' => false, 'message' => 'Product not found'], 404);
+            }
+            if (isset($data['main_image'])) {
+                $uploadedMainImage = Cloudinary::upload($data['main_image']->getRealPath(), [
+                    'folder' => 'products/main',
+                    'verify' => false
+                ]);
+                $data['main_image'] = $uploadedMainImage->getSecurePath();
+            }
+            $product = $this->productRepository->update($id, $data);
+            if (isset($data['images'])) {
+                $product->images()->delete();
+                foreach ($data['images'] as $image) {
+                    $uploadedImage = Cloudinary::upload($image->getRealPath(), [
+                        'folder' => 'products/additional',
+                        'verify' => false
+                    ]);
+                    $product->images()->create([
+                        'url' => $uploadedImage->getSecurePath()
+                    ]);
+                }
+            }
+            if (isset($data['colors'])) {
+                $product->colors()->sync($data['colors']);
+            }
+
+            if (isset($data['sizes'])) {
+                $product->sizes()->sync($data['sizes']);
+            }
+
+            if (isset($data['discounts'])) {
+                $product->discounts()->sync($data['discounts']);
+            }
+
+            DB::commit();
+            return response()->json(['success' => true, 'data' => $product->load(['images', 'colors', 'sizes', 'discounts'])], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'Update failed', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function deleteProduct(int $id)
@@ -149,7 +213,7 @@ class ProductService implements IProductService
     {
         return $this->productRepository->getProductDetails($id);
     }
-    
+
     public function filterProduct(array $filters)
     {
         return $this->productRepository->filterProduct($filters);
