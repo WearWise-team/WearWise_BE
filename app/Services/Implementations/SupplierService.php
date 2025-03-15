@@ -36,7 +36,7 @@ class SupplierService implements ISupplierService
 
     public function deleteSupplier(int $id)
     {
-        return $this->supplierRepository->delete($id);
+        return $this->supplierRepository->deleteOrRestore($id);
     }
 
     public function getSupplierByUserID($user_id){

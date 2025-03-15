@@ -69,6 +69,7 @@ Route::middleware('auth:api')->group(function () {
 });
 
 // Order routes
+Route::get('/orders', [OrderController::class, 'getAll']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/orders/{userId}', [OrderController::class, 'index']);
     Route::post('/orders/{userId}', [OrderController::class, 'store']);
@@ -102,6 +103,7 @@ Route::prefix('sizes')->group(function () {
 // Supplier routes
 Route::prefix('suppliers')->group(function () {
     Route::get('/', [SupplierController::class, 'index']);
+    Route::delete('/{id}', [SupplierController::class, 'destroy']);
     Route::get('/getSupplierByUserID/{user_id}', [SupplierController::class, 'getSupplierByUserID']);
 });
 

@@ -10,13 +10,19 @@ use Illuminate\Support\Facades\DB;
 
 class OrderRepository implements IOrderRepository
 {
+
+    public function getAll()
+    {
+        return Order::with('order_items')->get();
+    }
+
     public function getUserOrders($userId)
     {
         $orders = DB::table('orders')
             ->where('user_id', $userId)
             ->get();
 
-            $orderItems = DB::table('orders as o')
+        $orderItems = DB::table('orders as o')
             ->leftJoin('order_items as oi', 'o.id', '=', 'oi.order_id')
             ->leftJoin('products as p', 'oi.product_id', '=', 'p.id')
             ->leftJoin('colors as col', 'oi.product_color_id', '=', 'col.id')
@@ -41,7 +47,7 @@ class OrderRepository implements IOrderRepository
                 DB::raw('CASE WHEN r.id IS NOT NULL THEN true ELSE false END as reviewed') // Kiểm tra review
             )
             ->get();
-        
+
         $groupedOrderItems = $orderItems->groupBy('order_id');
 
         $orders->transform(function ($order) use ($groupedOrderItems) {

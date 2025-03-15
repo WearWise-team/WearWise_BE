@@ -54,8 +54,11 @@ class SupplierController extends Controller
 
     public function destroy($id)
     {
-        $this->supplierService->deleteSupplier((int) $id);
-        return response()->json(null, 204);
+        $result = $this->supplierService->deleteSupplier((int) $id);
+        if ($result === null) {
+            return response()->json(['message' => 'Supplier not found'], 404);
+        }
+        return response()->json(['message' => $result], 200);
     }
 
     public function getSupplierByUserID($user_id)

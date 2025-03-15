@@ -24,6 +24,11 @@ class OrderService implements IOrderService
         $this->orderItemRepository = $orderItemRepository;
     }
 
+    public function getAll()
+    {
+        return $this->orderRepository->getAll();
+    }
+
     public function getUserOrders($userId)
     {
         return $this->orderRepository->getUserOrders($userId);
@@ -37,7 +42,7 @@ class OrderService implements IOrderService
             if (empty($cartItems['cart'])) {
                 return response()->json(['message' => 'Giỏ hàng trống!'], 400);
             }
-            
+
             $order = $this->orderRepository->createOrder([
                 'user_id' => $userId,
                 'total_amount' => $totalPrice,
@@ -68,7 +73,8 @@ class OrderService implements IOrderService
         return $this->orderRepository->updateOrderStatus($userId, $orderId, $status);
     }
 
-    public function createOrderWithItems(int $userId, array $orderData, array $orderItems) {
+    public function createOrderWithItems(int $userId, array $orderData, array $orderItems)
+    {
         return $this->orderRepository->createOrderWithItems($userId, $orderData, $orderItems);
     }
 }
