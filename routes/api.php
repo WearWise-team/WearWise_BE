@@ -23,9 +23,9 @@ Route::post('products', [ProductController::class, 'store']);
 Route::get('products/{id}', [ProductController::class, 'show']);
 Route::post('/products/{id}', [ProductController::class, 'updateProduct']);
 Route::delete('products/{id}', [ProductController::class, 'destroy']);
-Route::post('/products/search', [ProductController::class, 'searchProductByName']);
+Route::post('/buyer/products/search', [ProductController::class, 'searchProductByName']);
 Route::get('/products/more/{id}', [ProductController::class, 'getProductDetails']);
-Route::post('/products/filter', [ProductController::class, 'filterProduct']);
+Route::post('/buyer/products/filter', [ProductController::class, 'filterProduct']);
 Route::get('/productswithsize', [ProductController::class, 'getProductWithColorAndSize']);
 Route::get('/productsbysupplierID/{id}', [ProductController::class, 'getProductBySupplierID']);
 Route::post('/products/upload', [ProductController::class, 'uploadImages']);
@@ -74,7 +74,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/orders/{userId}', [OrderController::class, 'index']);
     Route::post('/orders/{userId}', [OrderController::class, 'store']);
     Route::put('/orders', [OrderController::class, 'updateOrderStatus']);
-    Route::post('/products/create-order', [OrderController::class, 'createOrderWithItems']);
+    Route::post('buyer/order/create-order', [OrderController::class, 'createOrderWithItems']);
     Route::post('/virtual-tryon-klingAI', [KlingAIController::class, 'tryOnClothesWithKling']);
     Route::post('/get-result-try-on/{taskId}', [TryOnKController::class, 'getTryOnResult']);
 
