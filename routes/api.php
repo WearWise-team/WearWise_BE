@@ -77,6 +77,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('buyer/order/create-order', [OrderController::class, 'createOrderWithItems']);
     Route::post('/virtual-tryon-klingAI', [KlingAIController::class, 'tryOnClothesWithKling']);
     Route::post('/get-result-try-on/{taskId}', [TryOnKController::class, 'getTryOnResult']);
+    Route::post("/buyer/profile/me", [UserController::class, 'uploadAvatar']);
 
     Route::prefix('reviews')->group(function () {
         Route::post('/', [ReviewController::class, 'store']);

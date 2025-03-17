@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DTO\UserRequestDTO;
 use App\Services\Contracts\IUserService;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -91,6 +92,39 @@ class UserController extends Controller
             return response()->json(['error' => 'Failed to update user', 'message' => $e->getMessage()], 500);
         }
     }
+    /**
+     * Upload a new image avatar
+     */
+    public function uploadAvatar(Request $request)
+    {
+        if (!$request->hasFile('avatar')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No file uploaded'
+            ], 400);
+        }
+
+        $avatar = $request->file('avatar');
+
+        try {
+            $uploadedAvatar = Cloudinary::upload($avatar->getRealPath(), [
+                'folder' => 'users/avatars',
+                'verify' => false
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Avatar uploaded successfully',
+                'avatar_url' => $uploadedAvatar->getSecurePath()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Upload failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -125,7 +159,8 @@ class UserController extends Controller
         }
     }
 
-    public function restoreUser($id) {
+    public function restoreUser($id)
+    {
         try {
             $this->userService->restoreUser($id);
             return response()->json(['message' => 'User restored successfully']);
