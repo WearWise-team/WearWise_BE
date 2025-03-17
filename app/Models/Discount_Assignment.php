@@ -15,9 +15,6 @@ class Discount_Assignment extends Model
     protected $fillable = [
         'discount_id',
         'product_id',
-        'start_date',
-        'end_date',
-        'percentage'
     ];
 
     public function discount()

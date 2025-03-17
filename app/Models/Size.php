@@ -12,6 +12,7 @@ class Size extends Model
     protected $table = 'sizes';
 
     protected $fillable = [
+        'name',
         'shirt_size',
         'pant_size',
         'minimun_weight',

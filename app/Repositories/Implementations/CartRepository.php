@@ -65,20 +65,22 @@ class CartRepository implements ICartRepository
                 'p.name as product_name',
                 'p.description',
                 'p.price',
-                'p.image',
+                'p.main_image',
                 'ci.quantity',
+                'ci.total_price',
                 'col.id as color_id',
                 'col.name as color_name',
                 'col.code as color_code',
                 's.id as size_id',
                 's.shirt_size',
                 's.pant_size',
+                's.name',
                 'd.id as discount_id',
                 'd.code as discount_code',
                 'd.description as discount_description',
-                'da.start_date',
-                'da.end_date',
-                'da.percentage as discount_percentage'
+                'd.start_date',
+                'd.end_date',
+                'd.percentage as discount_percentage'
             )
             ->get();
 
@@ -86,7 +88,7 @@ class CartRepository implements ICartRepository
             'user_id' => $userId,
             'cart' => []
         ];
-
+        
         foreach ($cartItems as $item) {
             // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
             $existingIndex = array_search($item->cart_item_id, array_column($result['cart'], 'cart_item_id'));
@@ -100,10 +102,11 @@ class CartRepository implements ICartRepository
                         'name' => $item->product_name,
                         'description' => $item->description,
                         'price' => $item->price,
-                        'image' => $item->image,
+                        'main_image' => $item->main_image,
                     ],
                     'size' => [
                         'id' => $item->size_id,
+                        'name' => $item -> name,
                         'shirt_size' => $item->shirt_size,
                         'pant_size' => $item->pant_size
                     ],
@@ -113,6 +116,7 @@ class CartRepository implements ICartRepository
                         'code' => $item->color_code
                     ],
                     'quantity' => $item->quantity,
+                    'total_price' =>$item->total_price,
                     'discounts' => []
                 ];
 
@@ -169,19 +173,23 @@ class CartRepository implements ICartRepository
 
     public function addNewCartItem($cartId, $productId, $productColorId, $productSizeId, $quantity)
     {
+        // Lấy thông tin sản phẩm từ product_id
+        $product = Product::findOrFail($productId);
+
         return Cart_Item::create([
             'cart_id' => $cartId,
             'product_id' => $productId,
             'product_color_id' => $productColorId,
             'product_size_id' => $productSizeId,
             'quantity' => $quantity,
+            'total_price' => $quantity * $product->price, // Tính total_price
         ]);
     }
 
 
     public function findCartItemById($cartItemId)
     {
-        return Cart_Item::with('cart') 
+        return Cart_Item::with('cart')
             ->where('id', $cartItemId)
             ->first();
     }
@@ -195,16 +203,19 @@ class CartRepository implements ICartRepository
             ->first();
     }
 
-
-
     public function updateCartItemQuantity($cartItem, $quantity)
     {
         $cartItem->increment('quantity', $quantity);
+        $cartItem->update(['total_price' => $cartItem->quantity * $cartItem->product?->price]);
+
     }
 
     public function updateCartItemQuantityExact($cartItem, $quantity)
     {
-        $cartItem->update(['quantity' => $quantity]);
+        $cartItem->update([
+            'quantity' => $quantity,
+            'total_price' => $quantity * $cartItem->product?->price
+        ]);
     }
 
     public function removeCartItem($cartItem)
@@ -212,5 +223,18 @@ class CartRepository implements ICartRepository
         if ($cartItem) {
             $cartItem->forceDelete();
         }
+    }
+
+    public function clearUserCart(int $userId)
+    {
+        $cartItems = Cart_Item::whereHas('cart', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->get();
+
+        foreach ($cartItems as $item) {
+            $item->forceDelete();
+        }
+
+        return $cartItems;
     }
 }

@@ -3,8 +3,9 @@
 namespace App\Repositories\Implementations;
 
 use App\Models\Review;
+use App\Models\Order_Item;
 use App\Repositories\Contracts\IReviewRepository;
-
+use Illuminate\Support\Facades\DB;
 class ReviewRepository implements IReviewRepository
 {
     protected $model;
@@ -14,31 +15,41 @@ class ReviewRepository implements IReviewRepository
         $this->model = $model;
     }
 
-    public function getAll()
-    {
-        return $this->model->all();
-    }
-
-    public function findById(int $id)
-    {
-        return $this->model->find($id);
-    }
-
     public function create(array $data)
     {
-        return $this->model->create($data);
-    }
+        $userId = $data['user_id'];
+        $orderItemId = $data['order_item_id'];
 
-    public function update(int $id, array $data)
-    {
-        $post = $this->model->find($id);
-        return $post ? $post->update($data) : null;
-    }
+        $orderItem = Order_Item::where('id', $orderItemId)
+            ->whereHas('order', function ($query) use ($userId) {
+                $query->where('user_id', $userId)
+                    ->where('status', 'completed'); 
+            })
+            ->first();
 
-    public function delete(int $id)
-    {
-        return $this->model->destroy($id);
+        if (!$orderItem) {
+            return response()->json(['error' => 'Invalid order item or order not completed.'], 400);
+        }
+
+        $productId = $orderItem->product_id;
+
+        $reviewExists = Review::where('user_id', $userId)
+        ->where('order_item_id', $orderItemId)
+        ->exists();
+
+        if ($reviewExists) {
+            return response()->json(['error' => 'You have already reviewed this product from this order.'], 400);
+        }
+
+        $review = Review::create([
+            'user_id'       => $userId,
+            'product_id'    => $productId, 
+            'order_item_id' => $orderItemId,
+            'rating'        => $data['rating'],
+            'content'       => $data['content'],
+        ]);
+
+        return response()->json($review, 201);
     }
 }
-
 ?>

@@ -4,9 +4,7 @@ namespace App\Services\Contracts;
 
 interface IWishlistService
 {
-    public function getAllWishlists();
-    public function getWishlistById(int $id);
-    public function createWishlist(array $data);
-    public function updateWishlist(array $data, int $id);
-    public function deleteWishlist(int $id);
+    public function getAllWishlists(int $userId);
+    public function createWishlist(int $userId,array $data);
+    public function deleteWishlist(int $userId, int $productId);
 }

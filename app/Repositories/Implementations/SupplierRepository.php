@@ -16,7 +16,7 @@ class SupplierRepository implements ISupplierRepository
 
     public function getAll()
     {
-        return $this->model->all();
+        return $this->model->withTrashed()->get();
     }
 
     public function findById(int $id)
@@ -35,8 +35,22 @@ class SupplierRepository implements ISupplierRepository
         return $post ? $post->update($data) : null;
     }
 
-    public function delete(int $id)
+    public function deleteOrRestore(int $id)
     {
-        return $this->model->destroy($id);
+        $model = $this->model->withTrashed()->find($id);
+        if (!$model) {
+            return response()->json(['message' => 'Supplier not found'], 404);
+        }
+        if ($model->trashed()) {
+            $model->restore();
+            return response()->json(['message' => 'Supplier restored successfully'], 200);
+        }
+        $model->delete();
+        return response()->json(['message' => 'Supplier deleted successfully'], 200);
+    }
+
+    public function getSupplierByUserID($user_id)
+    {
+        return $this->model::where('user_id', $user_id)->first();
     }
 }

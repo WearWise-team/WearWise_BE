@@ -39,7 +39,9 @@ class Order_ItemRepository implements IOrder_ItemRepository
     {
         return $this->model->destroy($id);
     }
-    
-}
 
-?>
+    public function createOrderItem(array $data)
+    {
+        return $this->model->create($data);
+    }
+}

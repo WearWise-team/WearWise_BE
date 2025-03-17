@@ -34,9 +34,8 @@ class UserRequestDTO extends FormRequest
                 'regex:/[\W_]/',
             ],
             'phone'      => 'nullable|string|regex:/^[0-9\-\+]{9,15}$/',
-            'avatar'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'address'    => 'nullable|string|max:500',
-            'role'       => 'required|in:admin,user',
+            'role'       => 'required|in:admin,user,supplier',
             'weight'     => 'nullable|numeric|min:1|max:300',
             'height'     => 'nullable|numeric|min:50|max:250',
             'shirt_size' => 'nullable|string|in:S,M,L,XL,XXL',
@@ -44,7 +43,7 @@ class UserRequestDTO extends FormRequest
             'gender'     => 'required|in:male,female,other',
         ];
     }
-
+    
     public function messages()
     {
         return [

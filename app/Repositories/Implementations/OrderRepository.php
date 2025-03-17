@@ -3,41 +3,105 @@
 namespace App\Repositories\Implementations;
 
 use App\Models\Order;
+use App\Models\Order_Item;
 use App\Repositories\Contracts\IOrderRepository;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderRepository implements IOrderRepository
 {
-    protected $model;
-
-    public function __construct(Order $model)
-    {
-        $this->model = $model;
-    }
 
     public function getAll()
     {
-        return $this->model->all();
+        return Order::with('order_items')->get();
     }
 
-    public function findById(int $id)
+    public function getUserOrders($userId)
     {
-        return $this->model->find($id);
+        $orders = DB::table('orders')
+            ->where('user_id', $userId)
+            ->get();
+
+        $orderItems = DB::table('orders as o')
+            ->leftJoin('order_items as oi', 'o.id', '=', 'oi.order_id')
+            ->leftJoin('products as p', 'oi.product_id', '=', 'p.id')
+            ->leftJoin('colors as col', 'oi.product_color_id', '=', 'col.id')
+            ->leftJoin('sizes as s', 'oi.product_size_id', '=', 's.id')
+            ->leftJoin('reviews as r', 'oi.id', '=', 'r.order_item_id') // Kiểm tra review
+            ->where('o.user_id', $userId)
+            ->select(
+                'o.id as order_id',
+                'oi.id as order_item_id',
+                'oi.quantity',
+                'oi.status',
+                'p.id as product_id',
+                'p.name as product_name',
+                'p.main_image',
+                'p.price',
+                'col.id as color_id',
+                'col.name as color_name',
+                's.id as size_id',
+                's.name',
+                's.shirt_size',
+                's.pant_size',
+                DB::raw('CASE WHEN r.id IS NOT NULL THEN true ELSE false END as reviewed') // Kiểm tra review
+            )
+            ->get();
+
+        $groupedOrderItems = $orderItems->groupBy('order_id');
+
+        $orders->transform(function ($order) use ($groupedOrderItems) {
+            $order->items = $groupedOrderItems[$order->id] ?? [];
+            return $order;
+        });
+
+        return $orders;
     }
 
-    public function create(array $data)
+    public function createOrder(array $data, $userId)
     {
-        return $this->model->create($data);
+        $data['user_id'] = $userId;
+        $data['created_at'] = now();
+        $data['updated_at'] = now();
+
+        $orderId = DB::table('orders')->insertGetId($data);
+
+        return DB::table('orders')->where('id', $orderId)->first();
     }
 
-    public function update(int $id, array $data)
+    public function updateOrderStatus(int $userId, int $orderId, string $status)
     {
-        $post = $this->model->find($id);
-        return $post ? $post->update($data) : null;
+        return DB::table('orders')
+            ->where('id', $orderId)
+            ->where('user_id', $userId)
+            ->update(['status' => $status, 'updated_at' => now()]);
     }
 
-    public function delete(int $id)
+    public function createOrderWithItems(int $userId, array $orderData, array $orderItems)
     {
-        return $this->model->destroy($id);
+        return DB::transaction(function () use ($userId, $orderData, $orderItems) {
+            // Tạo Order
+            $order = Order::create([
+                'user_id' => $userId,
+                'total_amount' => $orderData['total_amount'] ?? 0,
+                'payment_method' => $orderData['payment_method'] ?? 'COD',
+                'order_date' => now()
+            ]);
+
+            // Tạo Order Items
+            foreach ($orderItems as $item) {
+                Order_Item::create([
+                    'order_id' => $order->id,
+                    'quantity' => $item['quantity'],
+                    'status' => $item['status'] ?? 'pending',
+                    'total_price' => $item['total_price'],
+                    'product_color_id' => $item['product_color_id'],
+                    'product_size_id' => $item['product_size_id'],
+                    'product_id' => $item['product_id']
+                ]);
+            }
+
+            return $order;
+        });
     }
-    
 }

@@ -56,7 +56,6 @@ class CartService implements ICartService
         if (!$cart) {
             $cart = $this->cartRepository->createCartForUser($userId);
         }
-
         $cartItem = $this->cartRepository->findCartItem($cart->id, $productId, $productColorId, $productSizeId);
         if ($cartItem) {
             $this->cartRepository->updateCartItemQuantity($cartItem, $quantity);

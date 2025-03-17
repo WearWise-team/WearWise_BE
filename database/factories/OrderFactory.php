@@ -24,7 +24,7 @@ class OrderFactory extends Factory
                 return User::factory()->create()->id;
             },
             'total_amount' => $this->faker->randomFloat(2, 10, 1000),
-            'status' => $this->faker->randomElement(['pending', 'completed', 'canceled']),
+            
             'order_date' => $this->faker->dateTimeThisYear(),
             'payment_method' => $this->faker->randomElement(['cash', 'momo', 'vnpay']),
         ];

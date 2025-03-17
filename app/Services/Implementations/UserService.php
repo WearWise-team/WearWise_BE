@@ -2,6 +2,7 @@
 
 namespace App\Services\Implementations;
 
+use App\Models\Supplier;
 use App\Models\User;
 use App\Repositories\Contracts\IUserRepository;
 use App\Services\Contracts\IUserService;
@@ -36,7 +37,19 @@ class UserService implements IUserService
         }
 
         $data['password'] = bcrypt($data['password']);
-        return $this->userRepository->create($data);
+        $user =  $this->userRepository->create($data);
+
+        if ($user->role === 'supplier') {
+            Supplier::create([
+                'user_id' => $user->id,
+                'name' => 'Wearwise Shop', // 🔥 Luôn luôn là "Wearwise Shop"
+                'phone' => $data['phone'] ?? null,
+                'address' => $data['address'] ?? null,
+                'avatar' => $user->avatar ?? null
+            ]);
+        }
+        
+        return $user;
     }
 
     public function updateUser(int $id, array $data)
@@ -47,5 +60,13 @@ class UserService implements IUserService
     public function deleteUser(int $id)
     {
         return $this->userRepository->delete($id);
+    }
+
+    public function getUsersIsDeleted() {
+        return $this->userRepository->getUsersIsDeleted();
+    }
+
+    public function restoreUser(int $id) {
+        return $this->userRepository->restoreUser($id);
     }
 }

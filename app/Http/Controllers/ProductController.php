@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Validator;
 use App\Services\Contracts\IProductService;
-use App\Http\Requests\DTO\ProductRequestDTO;
+use App\Models\Product;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -28,22 +32,10 @@ class ProductController extends Controller
     /**
      * Store a newly created product in the database.
      */
-    public function store(ProductRequestDTO $request)
+    public function store(Request $request)
     {
-        $validated = $request->validated();
-
-        $product = $this->productService->createProduct([
-            'name' => $validated['name'],
-            'price' => $validated['price'],
-            'description' => $validated['description'],
-            'image' => $validated['image'] ?? null,
-            'quantity' => $validated['quantity'],
-            'supplier_id' => $validated['supplier_id'],
-        ]);
-
-        return response()->json($product, 201);
+        return $this->productService->createProduct($request);
     }
-
     /**
      * Display the specified product.
      */
@@ -57,29 +49,27 @@ class ProductController extends Controller
     /**
      * Update the specified product in the database.
      */
-    public function update($id, ProductRequestDTO $request)
+    public function updateProduct(Request $request, $id)
     {
-        $validated = $request->validated();
-
-        $product = $this->productService->updateProduct($id, [
-            'name' => $validated['name'],
-            'price' => $validated['price'],
-            'description' => $validated['description'],
-            'image' => $validated['image'] ?? null,
-            'quantity' => $validated['quantity'],
-        ]);
-
-        return response()->json($product);
+        return $this->productService->updateProduct($id, $request->all());
     }
-
     /**
      * Remove the specified product from the database.
      */
     public function destroy($id)
     {
+        $product = $this->productService->getProductById($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
         $this->productService->deleteProduct($id);
 
-        return response()->json(null, 204);
+        return response()->json([
+            'message' => 'Product deleted successfully',
+            'deleted_product' => $product
+        ], 200);
     }
 
     public function searchProductByName(Request $request)
@@ -106,4 +96,43 @@ class ProductController extends Controller
 
         return response()->json($products);
     }
+
+    public function getProductWithColorAndSize()
+    {
+        $products = $this->productService->getProductWithColorAndSize();
+        return response()->json($products);
+    }
+
+    public function getProductBySupplierID(int $supplierId)
+    {
+        $products = $this->productService->getProductBySupplierID($supplierId);
+        return response()->json($products);
+    }
+
+    public function restoreProduct($id)
+    {
+        // Tìm sản phẩm đã bị xóa mềm (soft deleted)
+        $product = Product::onlyTrashed()->find($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found or not deleted'], 404);
+        }
+        $product->restore();
+        DB::table('product_sizes')
+            ->where('product_id', $id)
+            ->update(['deleted_at' => null]);
+
+        DB::table('product_colors')
+            ->where('product_id', $id)
+            ->update(['deleted_at' => null]);
+
+        DB::table('discount_assignments')
+            ->where('product_id', $id)
+            ->update(['deleted_at' => null]);
+
+        $product->images()->withTrashed()->restore();
+
+        return response()->json(['message' => 'Product and related data restored successfully', 'product' => $product]);
+    }
 }
+    

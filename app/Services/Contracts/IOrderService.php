@@ -4,10 +4,9 @@ namespace App\Services\Contracts;
 
 interface IOrderService
 {
-    public function getAllOrders();
-    public function getOrderById(int $id);
-    public function createOrder(array $data);
-    public function updateOrder(array $data, int $id);
-    public function deleteOrder(int $id);
+    public function getAll();
+    public function getUserOrders($userId);
+    public function updateOrderStatus(int $userId, int $orderId, string $status);
+    public function createOrderFromCart(int $userId, float $totalPrice, string $status, string $paymentMethod);
+    public function createOrderWithItems(int $userId, array $orderData, array $orderItems);
 }
-?>

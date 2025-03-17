@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Repositories\Implementations;
-
+use App\Models\Image;
 use App\Models\Product;
 use App\Repositories\Contracts\IProductRepository;
 use Illuminate\Support\Facades\DB;
@@ -17,9 +17,14 @@ class ProductRepository implements IProductRepository
 
     public function getAll()
     {
-        return $this->model->with(['reviews', 'discounts' => function ($query) {
-            $query->latest()->take(1);
-        }])->get();
+        return $this->model->with([
+            'reviews',
+            'discounts' => function ($query) {
+                $query->latest()->take(1);
+            },
+            'sizes',
+            'colors'
+        ])->get();
     }
 
     public function findById(int $id)
@@ -27,15 +32,17 @@ class ProductRepository implements IProductRepository
         return $this->model->find($id);
     }
 
-    public function create(array $data)
+    public function create(array $data): Product
     {
         return $this->model->create($data);
     }
 
     public function update(int $id, array $data)
     {
-        $post = $this->model->find($id);
-        return $post ? $post->update($data) : null;
+        $product = Product::findOrFail($id);
+        $product->update($data);
+
+        return $product;
     }
 
     public function delete(int $id)
@@ -48,8 +55,7 @@ class ProductRepository implements IProductRepository
         return Product::where('name', 'LIKE', "%$name%")
             ->with([
                 'discounts' => function ($q) {
-                    $q->select('discounts.id', 'discounts.code', 'discounts.description')
-                        ->withPivot('start_date', 'end_date', 'percentage');
+                    $q->select('discounts.id', 'discounts.code', 'discounts.description', 'discounts.start_date', 'discounts.end_date', 'discounts.percentage');
                 },
                 'reviews' => function ($q) {
                     $q->select('reviews.id', 'reviews.product_id', 'reviews.rating', 'reviews.content');
@@ -78,12 +84,13 @@ class ProductRepository implements IProductRepository
                 'products.description',
                 'products.price',
                 'products.quantity',
-                'products.image',
+                'products.main_image',
                 'suppliers.id as supplier_id',
                 'suppliers.name as supplier_name',
                 'suppliers.address as supplier_address',
                 'suppliers.avatar',
                 'suppliers.phone',
+                'sizes.name',
                 'sizes.id as size_id',
                 'sizes.shirt_size',
                 'sizes.pant_size',
@@ -100,9 +107,9 @@ class ProductRepository implements IProductRepository
                 'discounts.id as discount_id',
                 'discounts.code as discount_code',
                 'discounts.description as discount_description',
-                'discount_assignments.start_date',
-                'discount_assignments.end_date',
-                'discount_assignments.percentage',
+                'discounts.start_date',
+                'discounts.end_date',
+                'discounts.percentage',
                 'reviews.id as review_id',
                 'reviews.content as review_content',
                 'reviews.rating',
@@ -122,7 +129,7 @@ class ProductRepository implements IProductRepository
             'description' => $productData[0]->description,
             'price' => $productData[0]->price,
             'quantity' => $productData[0]->quantity,
-            'image' => $productData[0]->image,
+            'main_image' => $productData[0]->main_image,
             'supplier' => [
                 'id' => $productData[0]->supplier_id,
                 'name' => $productData[0]->supplier_name,
@@ -162,6 +169,7 @@ class ProductRepository implements IProductRepository
                     'id' => $row->size_id,
                     'shirt_size' => $row->shirt_size,
                     'pant_size' => $row->pant_size,
+                    'name' => $row->name,
                     'minimun_weight' => $row->minimun_weight,
                     'maximun_weight' => $row->maximun_weight,
                     'minimun_height' => $row->minimun_height,
@@ -248,13 +256,21 @@ class ProductRepository implements IProductRepository
             'colors',
             'sizes',
             'reviews' => function ($q) {
-                $q->select('id', 'product_id', 'rating', 'content'); // Giới hạn cột trả về nếu cần
+                $q->select('id', 'product_id', 'rating', 'content');
             },
             'discounts' => function ($q) {
-                $q->select('discounts.id', 'discounts.code', 'discounts.description')
-                    ->withPivot('start_date', 'end_date', 'percentage'); // Không cần join lại bảng trung gian
+                $q->select('discounts.id', 'discounts.code', 'discounts.description', 'discounts.start_date', 'discounts.end_date', 'discounts.percentage');
             }
 
         ])->get();
     }
-}
+
+    public function getProductWithColorAndSize()
+    {
+        return $this->model->with('colors', 'sizes', 'images')->get();
+    }
+
+    public function getProductBySupplierID(int $supplierId){
+        return $this->model::with('colors','sizes','images', 'discounts')->where('supplier_id', $supplierId)->get();
+    }
+}   

@@ -18,6 +18,7 @@ class Cart_Item extends Model
         'product_color_id',
         'product_size_id',
         'quantity',
+        'total_price',
     ];
     public $timestamps = true;
 
