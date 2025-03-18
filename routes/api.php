@@ -31,6 +31,13 @@ Route::get('/productsbysupplierID/{id}', [ProductController::class, 'getProductB
 Route::post('/products/upload', [ProductController::class, 'uploadImages']);
 Route::patch('/products/{id}/restore', [ProductController::class, 'restoreProduct']);
 
+Route::prefix('discounts')->group(function () {
+    Route::get('/', [DiscountController::class, 'index']);
+    Route::post('/', [DiscountController::class, 'store']);
+    Route::post('/{id}', [DiscountController::class, 'update']);
+    Route::delete('/{id}', [DiscountController::class, 'delete']);
+});
+
 // User routes
 Route::apiResource('users', controller: UserController::class);
 Route::get("/getAllUsersIsDeleted", [UserController::class, "getUsersIsDeleted"]);
@@ -106,8 +113,4 @@ Route::prefix('suppliers')->group(function () {
     Route::get('/', [SupplierController::class, 'index']);
     Route::delete('/{id}', [SupplierController::class, 'destroy']);
     Route::get('/getSupplierByUserID/{user_id}', [SupplierController::class, 'getSupplierByUserID']);
-});
-
-Route::prefix('discounts')->group(function () {
-    Route::get('/', [DiscountController::class, 'index']);
 });

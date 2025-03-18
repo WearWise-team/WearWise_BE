@@ -107,15 +107,17 @@ class UserController extends Controller
         $avatar = $request->file('avatar');
 
         try {
-            $uploadedAvatar = Cloudinary::upload($avatar->getRealPath(), [
-                'folder' => 'users/avatars',
-                'verify' => false
-            ]);
+            $avatarUrl = is_string($avatar)
+                ? $avatar
+                : Cloudinary::upload($avatar->getRealPath(), [
+                    'folder' => 'users/avatars',
+                    'verify' => false
+                ])->getSecurePath();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Avatar uploaded successfully',
-                'avatar_url' => $uploadedAvatar->getSecurePath()
+                'avatar_url' => $avatarUrl
             ]);
         } catch (\Exception $e) {
             return response()->json([

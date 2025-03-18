@@ -31,8 +31,14 @@ class DiscountRepository implements IDiscountRepository
 
     public function update(int $id, array $data)
     {
-        $post = $this->model->find($id);
-        return $post ? $post->update($data) : null;
+        $discount = $this->model->find($id);
+        if (!$discount) {
+            return null;
+        }
+
+        $discount->update($data);
+        
+        return $discount;
     }
 
     public function delete(int $id)
