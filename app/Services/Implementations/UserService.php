@@ -29,12 +29,9 @@ class UserService implements IUserService
 
     public function createUser(array $data)
     {
-        if (!empty($data['avatar'])) {
-            $uploadedFile = Cloudinary::upload($data['avatar']->getRealPath(), [
-                'folder' => 'avatars'
-            ]);
-            $data['avatar'] = $uploadedFile->getSecurePath(); // Lấy URL ảnh
-        }
+        $data['avatar'] = is_string($data['avatar'])
+            ? $data['avatar']
+            : Cloudinary::upload($data['avatar']->getRealPath(), ['folder' => 'avatars', 'verify' => false])->getSecurePath();
 
         $data['password'] = bcrypt($data['password']);
         $user =  $this->userRepository->create($data);
@@ -48,7 +45,7 @@ class UserService implements IUserService
                 'avatar' => $user->avatar ?? null
             ]);
         }
-        
+
         return $user;
     }
 
@@ -62,11 +59,13 @@ class UserService implements IUserService
         return $this->userRepository->delete($id);
     }
 
-    public function getUsersIsDeleted() {
+    public function getUsersIsDeleted()
+    {
         return $this->userRepository->getUsersIsDeleted();
     }
 
-    public function restoreUser(int $id) {
+    public function restoreUser(int $id)
+    {
         return $this->userRepository->restoreUser($id);
     }
 }
