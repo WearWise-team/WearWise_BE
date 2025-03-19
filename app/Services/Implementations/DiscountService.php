@@ -33,11 +33,11 @@ class DiscountService implements IDiscountService
     public function updateDiscount($id, array $data)
     {
         $validator = Validator::make($data, [
-            'code'        => 'required|string|max:50',
+            'code'        => 'sometimes|string|max:50',
             'description' => 'nullable|string',
-            'start_date'  => 'required|date',
-            'end_date'    => 'required|date|after_or_equal:start_date',
-            'percentage'  => 'required|numeric|min:0|max:100',
+            'start_date'  => 'sometimes|date',
+            'end_date'    => 'sometimes|date|after_or_equal:start_date',
+            'percentage'  => 'sometimes|numeric|min:0|max:100',
         ]);
 
         if ($validator->fails()) {
