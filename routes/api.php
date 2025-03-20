@@ -77,10 +77,11 @@ Route::middleware('auth:api')->group(function () {
 
 // Order routes
 Route::get('/orders', [OrderController::class, 'getAll']);
+Route::get('/supplier/orders/{userId}', [OrderController::class, 'getOrdersBySupplier']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/orders/{userId}', [OrderController::class, 'index']);
     Route::post('/orders/{userId}', [OrderController::class, 'store']);
-    Route::put('/orders', [OrderController::class, 'updateOrderStatus']);
+    Route::put('/orders/update-status', [OrderController::class, 'updateOrderStatus']);
     Route::post('buyer/order/create-order', [OrderController::class, 'createOrderWithItems']);
     Route::post('/virtual-tryon-klingAI', [KlingAIController::class, 'tryOnClothesWithKling']);
     Route::post('/get-result-try-on/{taskId}', [TryOnKController::class, 'getTryOnResult']);
@@ -113,4 +114,5 @@ Route::prefix('suppliers')->group(function () {
     Route::get('/', [SupplierController::class, 'index']);
     Route::delete('/{id}', [SupplierController::class, 'destroy']);
     Route::get('/getSupplierByUserID/{user_id}', [SupplierController::class, 'getSupplierByUserID']);
+    Route::get('/reviews/{userId}', [ReviewController::class, 'getReviewedProductsBySupplier']);
 });

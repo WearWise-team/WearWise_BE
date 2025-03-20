@@ -15,6 +15,13 @@ class OrderController extends Controller
         $this->orderService = $orderService;
     }
 
+    public function getOrdersBySupplier(int $userId)
+    {
+        $orders = $this->orderService->getOrdersBySupplier($userId);
+
+        return response()->json($orders, 200);
+    }
+
     public function getAll()
     {
         return response()->json($this->orderService->getAll());
@@ -48,16 +55,17 @@ class OrderController extends Controller
         $validatedData = $request->validate([
             'userId' => 'required|integer',
             'orderId' => 'required|integer',
+            'orderItemId' => 'required|integer',
             'status' => 'required|string|in:pending,completed,cancelled'
         ]);
 
-        $updated = $this->orderService->updateOrderStatus($validatedData['userId'], $validatedData['orderId'], $validatedData['status']);
+        $updated = $this->orderService->updateOrderItemStatus($validatedData['userId'], $validatedData['orderId'], $validatedData['orderItemId'], $validatedData['status']);
 
         if (!$updated) {
-            return response()->json(['message' => 'Cập nhật trạng thái thất bại hoặc đơn hàng không tồn tại'], 400);
+            return response()->json(['message' => 'Failed to update status or order does not exist'], 400);
         }
 
-        return response()->json(['message' => 'Cập nhật trạng thái đơn hàng thành công'], 200);
+        return response()->json(['message' => 'Order status updated successfully'], 200);
     }
 
     public function createOrderWithItems(Request $request)
