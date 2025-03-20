@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description')->nullable();
-            $table->decimal('price');
+            $table->decimal('price', 10, 3);
             $table->string('main_image');
             $table->integer('quantity');
             $table->string('category')->default('uncategorized');
             $table->unsignedBigInteger('supplier_id');
-            $table->integer('rating_avg')->default(5);
+            $table->integer('rating_avg')->default(5)->nullable();;
             $table->foreign('supplier_id')->references('id')->on('suppliers');
             $table->softDeletes();
             $table->timestamps();
