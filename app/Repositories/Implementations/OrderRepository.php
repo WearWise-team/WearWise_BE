@@ -4,6 +4,7 @@ namespace App\Repositories\Implementations;
 
 use App\Models\Order;
 use App\Models\Order_Item;
+use App\Models\Supplier;
 use App\Repositories\Contracts\IOrderRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,44 @@ class OrderRepository implements IOrderRepository
     public function getAll()
     {
         return Order::with('order_items')->get();
+    }
+
+    public function getOrdersBySupplier(int $userId)
+    {
+        $supplier = Supplier::where('user_id', $userId)->first();
+        if (!$supplier) {
+            return collect();
+        }
+        return Order::select('orders.*')
+            ->join('order_items', 'orders.id', '=', 'order_items.order_id')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->join('colors', 'order_items.product_color_id', '=', 'colors.id')
+            ->join('sizes', 'order_items.product_size_id', '=', 'sizes.id')
+            ->where('products.supplier_id', $supplier->id)
+            ->groupBy('orders.id')
+            ->with(['order_items' => function ($query) {
+                $query->join('products', 'order_items.product_id', '=', 'products.id')
+                    ->join('colors', 'order_items.product_color_id', '=', 'colors.id')
+                    ->join('sizes', 'order_items.product_size_id', '=', 'sizes.id')
+                    ->select([
+                        'order_items.order_id',
+                        'order_items.id as order_item_id',
+                        'order_items.quantity',
+                        'order_items.status',
+                        'products.id as product_id',
+                        'products.name as product_name',
+                        'products.main_image',
+                        'products.price',
+                        'colors.id as color_id',
+                        'colors.name as color_name',
+                        'sizes.id as size_id',
+                        'sizes.name',
+                        'sizes.shirt_size',
+                        'sizes.pant_size',
+                        DB::raw('(SELECT COUNT(*) FROM reviews WHERE reviews.order_item_id = order_items.id) as reviewed')
+                    ]);
+            }])
+            ->get();
     }
 
     public function getUserOrders($userId)
@@ -69,12 +108,17 @@ class OrderRepository implements IOrderRepository
         return DB::table('orders')->where('id', $orderId)->first();
     }
 
-    public function updateOrderStatus(int $userId, int $orderId, string $status)
+    public function updateOrderItemStatus(int $userId, int $orderId, int $orderItemId, string $status)
     {
-        return DB::table('orders')
-            ->where('id', $orderId)
-            ->where('user_id', $userId)
-            ->update(['status' => $status, 'updated_at' => now()]);
+        return DB::table('order_items')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->where('order_items.id', $orderItemId)
+            ->where('order_items.order_id', $orderId)
+            ->where('orders.user_id', $userId)
+            ->update([
+                'order_items.status' => $status,
+                'order_items.updated_at' => now()
+            ]);
     }
 
     public function createOrderWithItems(int $userId, array $orderData, array $orderItems)

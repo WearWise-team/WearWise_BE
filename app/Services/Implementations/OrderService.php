@@ -24,6 +24,11 @@ class OrderService implements IOrderService
         $this->orderItemRepository = $orderItemRepository;
     }
 
+    public function getOrdersBySupplier(int $supplierId) {
+        $orders = $this->orderRepository->getOrdersBySupplier($supplierId);
+        return $orders;
+    }
+
     public function getAll()
     {
         return $this->orderRepository->getAll();
@@ -68,9 +73,9 @@ class OrderService implements IOrderService
         });
     }
 
-    public function updateOrderStatus(int $userId, int $orderId, string $status)
+    public function updateOrderItemStatus(int $userId, int $orderId, int $orderItemId, string $status)
     {
-        return $this->orderRepository->updateOrderStatus($userId, $orderId, $status);
+        return $this->orderRepository->updateOrderItemStatus($userId, $orderId, $orderItemId, $status);
     }
 
     public function createOrderWithItems(int $userId, array $orderData, array $orderItems)

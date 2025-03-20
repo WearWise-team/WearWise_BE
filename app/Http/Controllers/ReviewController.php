@@ -23,4 +23,9 @@ class ReviewController extends Controller
         return response()->json($review, 201);
     }
 
+    public function getReviewedProductsBySupplier(int $userId) {
+        $reviews = $this->reviewService->getReviewedProductsBySupplier($userId);
+        return response()->json($reviews, 200);
+    }
+
 }

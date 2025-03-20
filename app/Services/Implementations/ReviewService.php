@@ -19,4 +19,7 @@ class ReviewService implements IReviewService
         return $this->reviewRepository->create($data);
     }
 
+    public function getReviewedProductsBySupplier(int $userId) {
+        return $this->reviewRepository->getReviewedProductsBySupplier($userId);
+    }
 }
