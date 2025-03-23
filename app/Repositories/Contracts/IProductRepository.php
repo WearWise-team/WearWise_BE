@@ -16,5 +16,4 @@ interface IProductRepository
     public function filterProduct(array $filters);
     public function getProductWithColorAndSize();
     public function getProductBySupplierID(int $supplierId);
-
 }

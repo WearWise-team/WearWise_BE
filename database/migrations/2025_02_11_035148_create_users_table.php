@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
-            $table->string('avatar')->default('https://byvn.net/7yAv')->nullable();
+            $table->string('avatar')->default('https://res.cloudinary.com/dvxygerfb/image/upload/v1742745343/png-clipart-logo-person-user-person-icon-rectangle-photography_pvavse.png')->nullable();
             $table->string('email')->unique();
             $table->string('password');
             $table->string('weight')->nullable();
