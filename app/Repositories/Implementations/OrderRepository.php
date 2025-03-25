@@ -23,11 +23,12 @@ class OrderRepository implements IOrderRepository
         if (!$supplier) {
             return collect();
         }
-        return Order::select('orders.*')
+        return Order::select('orders.*', 'users.name as user_name', 'users.email as user_email')
             ->join('order_items', 'orders.id', '=', 'order_items.order_id')
             ->join('products', 'order_items.product_id', '=', 'products.id')
             ->join('colors', 'order_items.product_color_id', '=', 'colors.id')
             ->join('sizes', 'order_items.product_size_id', '=', 'sizes.id')
+            ->join('users', 'orders.user_id', '=', 'users.id')
             ->where('products.supplier_id', $supplier->id)
             ->groupBy('orders.id')
             ->with(['order_items' => function ($query) {

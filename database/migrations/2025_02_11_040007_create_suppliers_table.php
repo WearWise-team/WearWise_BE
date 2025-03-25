@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('phone')->nullable();
-            $table->string('avatar')->default('https://byvn.net/7yAv')->nullable();
+            $table->string('avatar')->default('https://res.cloudinary.com/dvxygerfb/image/upload/v1742745343/png-clipart-logo-person-user-person-icon-rectangle-photography_pvavse.png')->nullable();
             $table->string('address')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -273,4 +273,4 @@ class ProductRepository implements IProductRepository
     public function getProductBySupplierID(int $supplierId){
         return $this->model::with('colors','sizes','images', 'discounts')->where('supplier_id', $supplierId)->get();
     }
-}   
+}
