@@ -19,7 +19,7 @@ class MoMoController extends Controller
         $requestId = time() . "";
         $amount = $request->amount;
         $orderInfo = "MoMo";
-        $redirectUrl = 'http://localhost:3000/profile';
+        $redirectUrl = 'https://wearwisebuyernew-nghiamai123s-projects.vercel.app/profile';
         $ipnUrl = 'http://localhost:8000/api/momo/ipn';
         $requestType = "captureWallet";
         $extraData = "";
