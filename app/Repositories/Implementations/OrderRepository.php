@@ -67,7 +67,7 @@ class OrderRepository implements IOrderRepository
             ->leftJoin('products as p', 'oi.product_id', '=', 'p.id')
             ->leftJoin('colors as col', 'oi.product_color_id', '=', 'col.id')
             ->leftJoin('sizes as s', 'oi.product_size_id', '=', 's.id')
-            ->leftJoin('reviews as r', 'oi.id', '=', 'r.order_item_id') // Kiểm tra review
+            ->leftJoin('reviews as r', 'oi.id', '=', 'r.order_item_id')
             ->where('o.user_id', $userId)
             ->select(
                 'o.id as order_id',
