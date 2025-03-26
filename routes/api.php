@@ -78,6 +78,7 @@ Route::middleware('auth:api')->group(function () {
 // Order routes
 Route::get('/orders', [OrderController::class, 'getAll']);
 Route::get('/supplier/orders/{userId}', [OrderController::class, 'getOrdersBySupplier']);
+Route::get('/supplier/revenue/{userId}', [OrderController::class, 'getRevenue']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/orders/{userId}', [OrderController::class, 'index']);
     Route::post('/orders/{userId}', [OrderController::class, 'store']);

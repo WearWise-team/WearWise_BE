@@ -17,48 +17,12 @@ class OrderController extends Controller
         $this->orderService = $orderService;
     }
 
-    public function getOrdersBySupplier(int $userId): JsonResponse
+    public function getOrdersBySupplier(int $userId)
     {
-       
-        $orders = collect($this->orderService->getOrdersBySupplier($userId));
+        $orders = $this->orderService->getOrdersBySupplier($userId);
 
-        $months = collect();
-        for ($i = 5; $i >= 0; $i--) {
-            $months->push([
-                'month_year' => Carbon::now()->subMonths($i)->format('Y-m'), 
-                'name' => Carbon::now()->subMonths($i)->format('M'), 
-                'total' => 0
-            ]);
-        }
-
-        $filteredOrders = $orders->filter(function ($order) {
-            return Carbon::parse($order->order_date) >= Carbon::now()->subMonths(5)->startOfMonth();
-        });
-
-        $revenues = $filteredOrders
-            ->groupBy(function ($order) {
-                return Carbon::parse($order->order_date)->format('Y-m'); 
-            })
-            ->map(function ($group) {
-                return [
-                    'total' => $group->sum('total_amount'),
-                    'name' => Carbon::parse($group->first()->order_date)->format('M')
-                ];
-            });
-
-        $finalData = $months->map(function ($month) use ($revenues) {
-            if ($revenues->has($month['month_year'])) {
-                $month['total'] = $revenues[$month['month_year']]['total'];
-            }
-            return $month;
-        });
-
-        return response()->json([
-            'orders' => $orders,
-            'revenue' => $finalData
-        ], 200);
+        return response()->json($orders, 200);
     }
-
 
     public function getAll()
     {
@@ -131,5 +95,43 @@ class OrderController extends Controller
 
         return response()->json(['message' => 'Order created successfully', 'order' => $order], 201);
     }
+    public function getRevenue(int $userId): JsonResponse
+    {
+        $orders = collect($this->orderService->getOrdersBySupplier($userId));
 
+        $months = collect();
+        for ($i = 5; $i >= 0; $i--) {
+            $months->push([
+                'month_year' => Carbon::now()->subMonths($i)->format('Y-m'),
+                'name' => Carbon::now()->subMonths($i)->format('M'),
+                'total' => 0
+            ]);
+        }
+
+        $filteredOrders = $orders->filter(function ($order) {
+            return Carbon::parse($order->order_date) >= Carbon::now()->subMonths(5)->startOfMonth();
+        });
+
+        $revenues = $filteredOrders
+            ->groupBy(function ($order) {
+                return Carbon::parse($order->order_date)->format('Y-m');
+            })
+            ->map(function ($group) {
+                return [
+                    'total' => $group->sum('total_amount'),
+                    'name' => Carbon::parse($group->first()->order_date)->format('M')
+                ];
+            });
+
+        $finalData = $months->map(function ($month) use ($revenues) {
+            if ($revenues->has($month['month_year'])) {
+                $month['total'] = $revenues[$month['month_year']]['total'];
+            }
+            return $month;
+        });
+
+        return response()->json([
+            'revenue' => $finalData
+        ], 200);
+    }
 }
