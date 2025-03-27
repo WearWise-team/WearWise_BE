@@ -39,7 +39,7 @@ class UserService implements IUserService
         if ($user->role === 'supplier') {
             Supplier::create([
                 'user_id' => $user->id,
-                'name' => 'Wearwise Shop', // 🔥 Luôn luôn là "Wearwise Shop"
+                'name' => 'Wearwise Shop', 
                 'phone' => $data['phone'] ?? null,
                 'address' => $data['address'] ?? null,
                 'avatar' => $user->avatar ?? null

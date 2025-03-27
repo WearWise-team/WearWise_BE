@@ -129,7 +129,7 @@ class OrderController extends Controller
             }
             return $month;
         });
-
+        dd($orders->pluck('order_date'));
         return response()->json([
             'revenue' => $finalData
         ], 200);
