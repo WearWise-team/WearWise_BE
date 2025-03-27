@@ -3,6 +3,8 @@
 namespace App\Services\Implementations;
 use App\Repositories\Contracts\IDiscountRepository;
 use App\Services\Contracts\IDiscountService;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class DiscountService implements IDiscountService
 {
@@ -28,9 +30,27 @@ class DiscountService implements IDiscountService
         return $this->discountRepository->create($data);
     }
 
-    public function updateDiscount(array $data, int $id)
+    public function updateDiscount($id, array $data)
     {
-        return $this->discountRepository->update($id, $data);
+        $validator = Validator::make($data, [
+            'code'        => 'sometimes|string|max:50',
+            'description' => 'nullable|string',
+            'start_date'  => 'sometimes|date',
+            'end_date'    => 'sometimes|date|after_or_equal:start_date',
+            'percentage'  => 'sometimes|numeric|min:0|max:100',
+        ]);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+
+        // Update Discount
+        $discount = $this->discountRepository->update($id, $data);
+        if (!$discount) {
+            return null;
+        }
+
+        return $discount;
     }
 
     public function deleteDiscount(int $id)

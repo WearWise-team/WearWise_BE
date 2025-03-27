@@ -155,7 +155,7 @@ class ProductService implements IProductService
         }
         DB::beginTransaction();
         try {
-            $product = $this->productRepository->findById($id);
+            $product = $this->productRepository->findById((int) $id);
             if (!$product) {
                 return response()->json(['success' => false, 'message' => 'Product not found'], 404);
             }

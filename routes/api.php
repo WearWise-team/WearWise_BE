@@ -23,13 +23,20 @@ Route::post('products', [ProductController::class, 'store']);
 Route::get('products/{id}', [ProductController::class, 'show']);
 Route::post('/products/{id}', [ProductController::class, 'updateProduct']);
 Route::delete('products/{id}', [ProductController::class, 'destroy']);
-Route::post('/products/search', [ProductController::class, 'searchProductByName']);
+Route::post('/buyer/products/search', [ProductController::class, 'searchProductByName']);
 Route::get('/products/more/{id}', [ProductController::class, 'getProductDetails']);
-Route::post('/products/filter', [ProductController::class, 'filterProduct']);
+Route::post('/buyer/products/filter', [ProductController::class, 'filterProduct']);
 Route::get('/productswithsize', [ProductController::class, 'getProductWithColorAndSize']);
 Route::get('/productsbysupplierID/{id}', [ProductController::class, 'getProductBySupplierID']);
 Route::post('/products/upload', [ProductController::class, 'uploadImages']);
 Route::patch('/products/{id}/restore', [ProductController::class, 'restoreProduct']);
+
+Route::prefix('discounts')->group(function () {
+    Route::get('/', [DiscountController::class, 'index']);
+    Route::post('/', [DiscountController::class, 'store']);
+    Route::post('/{id}', [DiscountController::class, 'update']);
+    Route::delete('/{id}', [DiscountController::class, 'delete']);
+});
 
 // User routes
 Route::apiResource('users', controller: UserController::class);
@@ -70,13 +77,16 @@ Route::middleware('auth:api')->group(function () {
 
 // Order routes
 Route::get('/orders', [OrderController::class, 'getAll']);
+Route::get('/supplier/orders/{userId}', [OrderController::class, 'getOrdersBySupplier']);
+Route::get('/supplier/revenue/{userId}', [OrderController::class, 'getRevenue']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/orders/{userId}', [OrderController::class, 'index']);
     Route::post('/orders/{userId}', [OrderController::class, 'store']);
-    Route::put('/orders', [OrderController::class, 'updateOrderStatus']);
-    Route::post('/products/create-order', [OrderController::class, 'createOrderWithItems']);
+    Route::put('/orders/update-status', [OrderController::class, 'updateOrderStatus']);
+    Route::post('buyer/order/create-order', [OrderController::class, 'createOrderWithItems']);
     Route::post('/virtual-tryon-klingAI', [KlingAIController::class, 'tryOnClothesWithKling']);
     Route::post('/get-result-try-on/{taskId}', [TryOnKController::class, 'getTryOnResult']);
+    Route::post("/buyer/profile/me", [UserController::class, 'uploadAvatar']);
 
     Route::prefix('reviews')->group(function () {
         Route::post('/', [ReviewController::class, 'store']);
@@ -105,8 +115,5 @@ Route::prefix('suppliers')->group(function () {
     Route::get('/', [SupplierController::class, 'index']);
     Route::delete('/{id}', [SupplierController::class, 'destroy']);
     Route::get('/getSupplierByUserID/{user_id}', [SupplierController::class, 'getSupplierByUserID']);
-});
-
-Route::prefix('discounts')->group(function () {
-    Route::get('/', [DiscountController::class, 'index']);
+    Route::get('/reviews/{userId}', [ReviewController::class, 'getReviewedProductsBySupplier']);
 });

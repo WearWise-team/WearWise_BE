@@ -101,6 +101,7 @@ class ProductRepository implements IProductRepository
                 'sizes.target_audience',
                 'images.id as image_id',
                 'images.url as image_url',
+                'images.deleted_at as image_deletedat',  
                 'colors.id as color_id',
                 'colors.name as color_name',
                 'colors.code as color_code',
@@ -194,7 +195,8 @@ class ProductRepository implements IProductRepository
             if ($row->image_id && !in_array($row->image_id, $addedImages)) {
                 $product['images'][] = [
                     'id' => $row->image_id,
-                    'url' => $row->image_url
+                    'url' => $row->image_url,
+                    'deleted_at' => $row->image_deletedat,
                 ];
                 $addedImages[] = $row->image_id;
             }
@@ -273,4 +275,4 @@ class ProductRepository implements IProductRepository
     public function getProductBySupplierID(int $supplierId){
         return $this->model::with('colors','sizes','images', 'discounts')->where('supplier_id', $supplierId)->get();
     }
-}   
+}
