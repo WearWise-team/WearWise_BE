@@ -2,43 +2,30 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
- */
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
+    protected $model = User::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'name' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'password' => bcrypt('password'), // Mật khẩu mặc định sử dụng bcrypt
+            'phone' => $this->faker->optional()->phoneNumber(),
+            'avatar' => "https://placehold.co/100x100",
+            'address' => $this->faker->optional()->address(),
+            'role' => $this->faker->optional()->randomElement(['admin', 'user', 'supplier']),
+            'weight' => $this->faker->optional()->randomFloat(2, 40, 120),
+            'height' => $this->faker->optional()->randomFloat(2, 140, 200),
+            'shirt_size' => $this->faker->optional()->randomElement(['S', 'M', 'L', 'XL', 'XXL']),
+            'pant_size' => $this->faker->optional()->numberBetween(28, 40),
+            'gender' => $this->faker->optional()->randomElement(['male', 'female', 'other']),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
-    }
-
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
     }
 }

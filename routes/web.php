@@ -17,5 +17,3 @@ Route::get('/test-db', function () {
     }
 });
 
-Route::get('/users', [UserController::class, 'index']);
-Route::post('/stripe/users', [UserController::class, 'store']);

@@ -39,4 +39,27 @@ class UserRepository implements IUserRepository
     {
         return $this->model->destroy($id);
     }
+
+    public function getUsersIsDeleted()
+    {
+        $user = $this->model->onlyTrashed()->get();
+
+        if (!$user) {
+            return null;
+        }
+        return $user;
+    }
+
+    public function restoreUser($id)
+    {
+        $user = $this->model->onlyTrashed()->find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found or not deleted'], 404);
+        }
+
+        $user->restore();
+
+        return response()->json(['message' => 'User restored successfully'], 200);
+    }
 }
