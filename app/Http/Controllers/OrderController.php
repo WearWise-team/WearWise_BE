@@ -129,7 +129,6 @@ class OrderController extends Controller
             }
             return $month;
         });
-
         return response()->json([
             'revenue' => $finalData
         ], 200);
